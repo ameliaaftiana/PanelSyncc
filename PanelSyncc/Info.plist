@@ -18,24 +18,24 @@
 		<string>PlusJakartaSans-Regular.ttf</string>
 		<string>PlusJakartaSans-SemiBold.ttf</string>
 		<string>PlusJakartaSans-SemiBoldItalic.ttf</string>
-		<string>Inter_18pt-Black.ttf</string>
-		<string>Inter_18pt-BlackItalic.ttf</string>
-		<string>Inter_18pt-Bold.ttf</string>
-		<string>Inter_18pt-BoldItalic.ttf</string>
-		<string>Inter_18pt-ExtraBold.ttf</string>
-		<string>Inter_18pt-ExtraBoldItalic.ttf</string>
-		<string>Inter_18pt-ExtraLight.ttf</string>
-		<string>Inter_18pt-ExtraLightItalic.ttf</string>
-		<string>Inter_18pt-Italic.ttf</string>
-		<string>Inter_18pt-Light.ttf</string>
-		<string>Inter_18pt-LightItalic.ttf</string>
-		<string>Inter_18pt-Medium.ttf</string>
-		<string>Inter_18pt-MediumItalic.ttf</string>
-		<string>Inter_18pt-Regular.ttf</string>
-		<string>Inter_18pt-SemiBold.ttf</string>
-		<string>Inter_18pt-SemiBoldItalic.ttf</string>
-		<string>Inter_18pt-ThinItalic.ttf</string>
-		<string>Inter_18pt-Thin.ttf</string>
+		<string>Inter-Black.otfInter-BlackItalic.otfInter-Bold.otfInter-BoldItalic.otfInter-ExtraBold.otfInter-ExtraBoldItalic.otfInter-ExtraLight.otfInter-ExtraLightItalic.otfInter-Italic.otfInter-Light.otfInter-LightItalic.otfInter-Medium.otfInter-Thin.otfInter-ThinItalic.otfInter-SemiBoldItalic.otfInter-SemiBold.otfInter-Regular.otfInter-MediumItalic.otf</string>
+		<string>Inter-BlackItalic.otf</string>
+		<string>Inter-Bold.otf</string>
+		<string>Inter-BoldItalic.otf</string>
+		<string>Inter-ExtraBold.otf</string>
+		<string>Inter-ExtraBoldItalic.otf</string>
+		<string>Inter-ExtraLight.otf</string>
+		<string>Inter-ExtraLightItalic.otf</string>
+		<string>Inter-Italic.otf</string>
+		<string>Inter-Light.otf</string>
+		<string>Inter-LightItalic.otf</string>
+		<string>Inter-Medium.otf</string>
+		<string>Inter-MediumItalic.otf</string>
+		<string>Inter-Regular.otf</string>
+		<string>Inter-SemiBold.otf</string>
+		<string>Inter-SemiBoldItalic.otf</string>
+		<string>Inter-Thin.otf</string>
+		<string>Inter-ThinItalic.otf</string>
 	</array>
 </dict>
 </plist>

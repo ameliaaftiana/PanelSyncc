@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SocialAuthButton: View {
     let title: String
-    let iconName: String // SystemImage name or custom asset name
+    let iconName: String
     let isSystemIcon: Bool
     let action: () -> Void
     
@@ -28,19 +28,17 @@ struct SocialAuthButton: View {
                 }
                 
                 Text(title)
-                    .font(.headline)
+                    .font(.buttonFontOnboard)
             }
             .foregroundColor(Color(hex: "#FFFFFF"))
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(Color(hex: "#6B7589"))
+            .padding(.vertical, 16)
+            .background(Color.panelDark)
             .cornerRadius(12)
         }
     }
 }
 
-// Preview
-// Preview
 #Preview {
     SocialAuthButton(
         title: "Get Started",
