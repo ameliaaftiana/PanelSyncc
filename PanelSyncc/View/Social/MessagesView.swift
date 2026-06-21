@@ -32,7 +32,7 @@ struct MessagesView: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
-                        .padding(13)
+                        .padding(16)
                         .background(Color.white)
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -41,7 +41,7 @@ struct MessagesView: View {
                 Spacer()
 
                 Text("Messages")
-                    .font(.libraryTitle)
+                    .font(.rankTitle)
                     .foregroundColor(.panelDark)
 
                 Spacer()
@@ -52,7 +52,7 @@ struct MessagesView: View {
                     Image(systemName: "square.and.pencil")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
-                        .padding(10)
+                        .padding(12)
                         .background(Color.white)
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -60,10 +60,10 @@ struct MessagesView: View {
             }
             .padding(.horizontal)
             .padding(.top, 10)
-            .padding(.bottom, 12)
+            .padding(.bottom, 20)
 
             // ── 2. Search Bar ─────────────────────────────────────────────────
-            HStack(spacing: 12) {
+            HStack(spacing: 20) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.gray)
                     .font(.system(size: 16, weight: .medium))
@@ -86,10 +86,10 @@ struct MessagesView: View {
             .padding(.horizontal, 16)
             .frame(height: 50)
             .background(Color.white)
-            .cornerRadius(25)
+            .cornerRadius(12)
             .shadow(color: .black.opacity(0.05), radius: 6, x: 0, y: 3)
             .padding(.horizontal)
-            .padding(.bottom, 18)
+            .padding(.bottom, 20)
 
             // ── 3. Messages List ──────────────────────────────────────────────
             ScrollView(showsIndicators: false) {
@@ -97,7 +97,6 @@ struct MessagesView: View {
                     ForEach(0..<mockMessages.count, id: \.self) { index in
                         let msg = mockMessages[index]
 
-                        // UPDATED: Wrapped in NavigationLink to route to ChatView
                         NavigationLink(destination: ChatView()) {
                             MessageCellView(
                                 username: msg.0,
@@ -106,7 +105,7 @@ struct MessagesView: View {
                                 unreadCount: msg.3
                             )
                         }
-                        .buttonStyle(PlainButtonStyle()) // Keeps text colors exactly as designed
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
                 .padding(.horizontal)
@@ -115,6 +114,7 @@ struct MessagesView: View {
         }
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
+        .toolbar(.hidden, for: .tabBar)
         .fullScreenCover(isPresented: $showCreateMessage) {
             CreateMessagesView()
         }

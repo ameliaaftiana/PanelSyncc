@@ -26,7 +26,7 @@ struct UploadChapterView: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
-                        .padding(13)
+                        .padding(18)
                         .background(Color.white)
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -35,7 +35,7 @@ struct UploadChapterView: View {
                 Spacer()
 
                 Text("Upload Chapter")
-                    .font(.libraryTitle)
+                    .font(.rankTitle)
                     .foregroundColor(.panelDark)
 
                 Spacer()
@@ -45,26 +45,25 @@ struct UploadChapterView: View {
             }
             .padding(.horizontal)
             .padding(.top, 10)
-            .padding(.bottom, 12)
+            .padding(.bottom, 20)
 
             // ── 2. Scrollable Content ────────────────────────────────────
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
 
                     // Current Series Identifier
-                    HStack(spacing: 12) {
+                    HStack(spacing: 20) {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.black)
                             .frame(width: 60, height: 60)
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text("CURRENT SERIES")
-                                .font(.system(size: 10, weight: .bold))
-                                .foregroundColor(.gray)
+                                .font(.onboardingSkip)
+                                .foregroundColor(.panelSecondary)
 
                             Text(seriesTitle)
-                                .font(.title3)
-                                .fontWeight(.bold)
+                                .font(.rankCardFont)
                         }
                         Spacer()
                     }
@@ -75,8 +74,7 @@ struct UploadChapterView: View {
                     // Chapter Number Input
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Chapter Number")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.otherTitle)
 
                         TextField("Enter chapter number", text: $chapterNumber)
                             .keyboardType(.numberPad)
@@ -90,8 +88,7 @@ struct UploadChapterView: View {
                     // Chapter Title Input
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Chapter Title")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.otherTitle)
 
                         TextField("Enter chapter title", text: $chapterTitle)
                             .padding()
@@ -104,12 +101,11 @@ struct UploadChapterView: View {
                     // Pages Upload Area
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Pages")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.otherTitle)
 
                         Text("Upload comic pages in order.")
-                            .font(.caption)
-                            .foregroundColor(.panelDark)
+                            .font(.onboardingSkip)
+                            .foregroundColor(.panelPrimary)
 
                         // Main Upload Button
                         Button(action: {
@@ -118,14 +114,13 @@ struct UploadChapterView: View {
                             VStack(spacing: 8) {
                                 Image(systemName: "photo.on.rectangle.angled")
                                     .font(.system(size: 24))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.panelSecondary)
                                 Text("Select Pages")
-                                    .font(.subheadline)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
+                                    .font(.otherTitle)
+                                    .foregroundColor(.panelSecondary)
                                 Text("JPEG, PNG up 10Mb each")
                                     .font(.caption2)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.panelSecondary)
                             }
                             .frame(maxWidth: .infinity)
                             .frame(height: 140)
@@ -143,11 +138,11 @@ struct UploadChapterView: View {
 
                                     VStack(spacing: 4) {
                                         Image(systemName: "photo")
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.panelSecondary)
                                         Text("PG. \(index)")
                                             .font(.caption2)
                                             .fontWeight(.bold)
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.panelSecondary)
                                     }
                                 }
                             }
@@ -155,7 +150,7 @@ struct UploadChapterView: View {
                         .padding(.top, 4)
                     }
 
-                    Spacer(minLength: 24)
+                    Spacer(minLength:0 )
 
                     // ── 3. Publish Button ─────────────────────────────────
                     PrimaryButton(title: "Publish Chapter") {
@@ -163,10 +158,10 @@ struct UploadChapterView: View {
                         print("Publishing chapter...")
                     }
                 }
-                .padding(24)
+                .padding(.horizontal)
             }
         }
-        .background(Color.white.ignoresSafeArea())
+        .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
     }
 }

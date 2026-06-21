@@ -1,3 +1,11 @@
+//
+//  ComicDetailView.swift
+//  PanelSyncc
+//
+//  Created by Amelia Putri Aftiana on 18/06/26.
+//
+
+
 import SwiftUI
 
 // MARK: - ComicDetailView
@@ -9,13 +17,13 @@ struct ComicDetailView: View {
     let comments: [ComicComment]
     let featuredCollections: [ComicCollection]
     let peopleAlsoLike: [ComicCollection]
-
+    
     @State private var isBookmarked: Bool = false
     @State private var showFullSynopsis: Bool = false
     @State private var showRatingPopup: Bool = false
     @State private var scrollOffset: CGFloat = 0
     @Environment(\.dismiss) private var dismiss
-
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
@@ -44,7 +52,7 @@ struct ComicDetailView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 280)
                     .clipped()
-
+                    
                     LinearGradient(
                         gradient: Gradient(colors: [
                             Color.clear,
@@ -55,19 +63,19 @@ struct ComicDetailView: View {
                         endPoint: .bottom
                     )
                 }
-
+                
                 // ── Main Content VStack ────────────────────────────────────
                 VStack(alignment: .leading, spacing: 20) {
-
+                    
                     // ── 2. Rating & Genres ─────────────────────────────────
                     VStack(alignment: .leading, spacing: 10) {
-
+                        
                         Button(action: {
                             showRatingPopup = true
                         }) {
                             StarRatingView(rating: webtoon.rating)
                         }
-
+                        
                         HStack(spacing: 8) {
                             Text(webtoon.genre)
                                 .font(.caption)
@@ -79,17 +87,17 @@ struct ComicDetailView: View {
                         }
                     }
                     .padding(.horizontal)
-
+                    
                     // ── 3. Title, Author, Quick-Stats ──────────────────────
                     VStack(alignment: .leading, spacing: 6) {
                         Text(webtoon.title)
                             .font(.libraryTitle)
                             .foregroundColor(.panelDark)
-
+                        
                         Text("By \(webtoon.author)")
                             .font(.rankCardFontDescription)
                             .foregroundColor(.panelPrimary)
-
+                        
                         HStack(spacing: 6) {
                             QuickStatChip(icon: "heart.fill", value: webtoon.like)
                             Text("·").foregroundColor(.secondary)
@@ -104,7 +112,7 @@ struct ComicDetailView: View {
                         }
                     }
                     .padding(.horizontal)
-
+                    
                     // ── 4. Action Buttons ──────────────────────────────────
                     HStack(spacing: 12) {
                         NavigationLink(destination: ComicReadingView(chapterNumber: chapters.first?.chapterNumber ?? 1)) {
@@ -120,7 +128,7 @@ struct ComicDetailView: View {
                             .foregroundColor(Color.panelWhite)
                             .cornerRadius(12)
                         }
-
+                        
                         Button {
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 isBookmarked.toggle()
@@ -135,7 +143,7 @@ struct ComicDetailView: View {
                         }
                     }
                     .padding(.horizontal)
-
+                    
                     // ── 5. Synopsis ────────────────────────────────────────
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
@@ -151,7 +159,7 @@ struct ComicDetailView: View {
                             .underline()
                             .foregroundColor(.panelSecondary)
                         }
-
+                        
                         Text(webtoon.summary)
                             .font(.body)
                             .foregroundColor(.secondary)
@@ -160,14 +168,14 @@ struct ComicDetailView: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .padding(.horizontal)
-
+                    
                     // ── 6. Chapters ────────────────────────────────────────
                     VStack(alignment: .leading, spacing: 12) {
                         SectionHeader(title: "Chapters") {
                             // Navigate to full chapters list
                         }
                         .padding(.horizontal)
-
+                        
                         VStack(spacing: 8) {
                             ForEach(chapters.prefix(4)) { chapter in
                                 ChapterRowCard(
@@ -182,14 +190,14 @@ struct ComicDetailView: View {
                         }
                         .padding(.horizontal)
                     }
-
+                    
                     // ── 7. Comments ────────────────────────────────────────
                     VStack(alignment: .leading, spacing: 16) {
                         SectionHeader(title: "Comments") {
                             // Navigate to all comments screen
                         }
                         .padding(.horizontal)
-
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 16) {
                                 ForEach(comments.prefix(5)) { comment in
@@ -205,14 +213,14 @@ struct ComicDetailView: View {
                             .padding(.horizontal)
                         }
                     }
-
+                    
                     // ── 8. Featured in Collections ─────────────────────────
                     VStack(alignment: .leading, spacing: 12) {
                         SectionHeader(title: "Featured in Collections") {
                             // Navigate to full collections list
                         }
                         .padding(.horizontal)
-
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 16) {
                                 ForEach(featuredCollections) { item in
@@ -226,14 +234,14 @@ struct ComicDetailView: View {
                             .padding(.horizontal)
                         }
                     }
-
+                    
                     // ── 9. People Also Like ────────────────────────────────
                     VStack(alignment: .leading, spacing: 12) {
                         SectionHeader(title: "People Also Like") {
                             // Navigate to similar comics list
                         }
                         .padding(.horizontal)
-
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 16) {
                                 ForEach(dataLoader.webtoons.dropFirst().prefix(10)) { comic in
@@ -248,7 +256,7 @@ struct ComicDetailView: View {
                             .padding(.horizontal)
                         }
                     }
-
+                    
                     Spacer(minLength: 40)
                 }
                 .padding(.top, 16)
@@ -271,7 +279,9 @@ struct ComicDetailView: View {
         }
         .ignoresSafeArea(edges: .top)
         .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .tabBar)
         .overlay(alignment: .top) {
+            
             HStack {
                 Button { dismiss() } label: {
                     Image(systemName: "chevron.left")
@@ -324,20 +334,20 @@ struct ScrollOffsetKey: PreferenceKey {
 
 struct RatingPopupView: View {
     let title: String
-
+    
     @Environment(\.dismiss) private var dismissSheet
-
+    
     @State private var selectedRating: Int = 0
     @State private var reviewText: String = ""
-
+    
     var body: some View {
         VStack(spacing: 20) {
-
+            
             // Header Row
             ZStack {
                 Text("Rating")
                     .font(.otherTitle)
-
+                
                 HStack {
                     Button(action: {
                         dismissSheet()
@@ -355,17 +365,17 @@ struct RatingPopupView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 32)
-
+            
             // Titles
             VStack(spacing: 8) {
                 Text(title)
                     .font(.topPicksTitle)
-
+                
                 Text("How would you rate this comic?")
                     .font(.bodyText)
                     .foregroundColor(.panelDark)
             }
-
+            
             // Interactive Stars
             HStack(spacing: 12) {
                 ForEach(1...5, id: \.self) { index in
@@ -380,18 +390,18 @@ struct RatingPopupView: View {
                 }
             }
             .padding(.vertical, 10)
-
+            
             // Text Area
             ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color(UIColor.systemBackground).opacity(0.7))
                     .shadow(color: .black.opacity(0.05), radius: 5, y: 2)
-
+                
                 TextEditor(text: $reviewText)
                     .padding(12)
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
-
+                
                 if reviewText.isEmpty {
                     Text("Write a review (optional)\nWhat did you think of the stories?")
                         .foregroundColor(.gray)
@@ -402,9 +412,9 @@ struct RatingPopupView: View {
             }
             .frame(height: 140)
             .padding(.horizontal)
-
+            
             Spacer()
-
+            
             // Submit Button
             Button(action: {
                 dismissSheet()
@@ -428,7 +438,7 @@ struct RatingPopupView: View {
 private struct SectionHeader: View {
     let title: String
     let onSeeAll: () -> Void
-
+    
     var body: some View {
         HStack {
             Text(title)
@@ -445,7 +455,7 @@ private struct SectionHeader: View {
 private struct QuickStatChip: View {
     let icon: String
     let value: String
-
+    
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: icon)
@@ -460,21 +470,20 @@ private struct QuickStatChip: View {
 
 private struct StarRatingView: View {
     let rating: Double
-
+    
     var body: some View {
         HStack(spacing: 3) {
             ForEach(0..<5, id: \.self) { index in
                 Image(systemName: starName(for: index))
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.yellow)
             }
             Text(String(format: "%.1f", rating))
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.primary)
+                .font(.subHead)
+                .foregroundColor(.panelDark)
         }
     }
-
+    
     private func starName(for index: Int) -> String {
         let filled = Int(rating)
         let hasHalf = (rating - Double(filled)) >= 0.5

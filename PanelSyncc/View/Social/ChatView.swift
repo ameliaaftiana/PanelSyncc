@@ -22,22 +22,21 @@ struct ChatView: View {
                     Button(action: { dismiss() }) {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.panelDark)
-                            .frame(width: 44, height: 44)
+                            .foregroundColor(.black)
+                            .padding(16)
                             .background(Color.white)
                             .clipShape(Circle())
+                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                     }
                     
                     Spacer()
                     
                     VStack(spacing: 2) {
                         Text("Kim Mingyu")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.rankCardFontTitle)
                             .foregroundColor(.panelDark)
                         Text("Online")
-                            .font(.caption)
-                            .fontWeight(.bold)
+                            .font(.searchText)
                             .foregroundColor(.panelDark)
                     }
                     
@@ -45,11 +44,12 @@ struct ChatView: View {
                     
                     Button(action: { /* Actions */ }) {
                         Image(systemName: "ellipsis")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.panelDark)
-                            .frame(width: 44, height: 44)
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.black)
+                            .padding(18)
                             .background(Color.white)
                             .clipShape(Circle())
+                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                     }
                 }
                 .padding(.horizontal)
@@ -62,8 +62,7 @@ struct ChatView: View {
                         
                         // ── Date Pill 1 ──
                         Text("Mon, 8 Jun")
-                            .font(.caption)
-                            .fontWeight(.medium)
+                            .font(.searchText)
                             .foregroundColor(.panelWhite)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 6)
@@ -94,8 +93,7 @@ struct ChatView: View {
                         
                         // ── Date Pill 2 ──
                         Text("Tue, 9 Jun")
-                            .font(.caption)
-                            .fontWeight(.medium)
+                            .font(.searchText)
                             .foregroundColor(.panelWhite)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 6)
@@ -166,7 +164,7 @@ struct ChatBubble: View {
 
     var body: some View {
         Text(text)
-            .font(.subheadline)
+            .font(.bodyText)
             .foregroundColor(isSentByMe ? .white : .black)
             .padding(16)
             .background(isSentByMe ? Color.panelDark : Color.panelSecondary)
@@ -184,11 +182,10 @@ struct ComicShareCard: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Star")
-                        .font(.headline)
-                        .fontWeight(.bold)
+                        .font(.rankCardFontTitle)
                         .foregroundColor(.panelWhite)
                     Text("By The Creator")
-                        .font(.caption)
+                        .font(.seeAll)
                         .foregroundColor(.panelWhite)
                     Text("Rating: 4.5")
                         .font(.caption2)
@@ -207,7 +204,7 @@ struct ComicShareCard: View {
                 .foregroundColor(.panelDark)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color.panelSecondary)
+                .background(Color.panelPrimary)
                 .cornerRadius(12)
             }
         }

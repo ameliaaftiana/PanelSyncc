@@ -1,3 +1,11 @@
+//
+//  RatingCommentCard.swift
+//  PanelSyncc
+//
+//  Created by Amelia Putri Aftiana on 18/06/26.
+//
+
+
 import SwiftUI
 
 struct RatingCommentCard: View {

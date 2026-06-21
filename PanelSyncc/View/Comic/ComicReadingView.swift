@@ -1,3 +1,11 @@
+//
+//  ComicReadingView.swift
+//  PanelSyncc
+//
+//  Created by Amelia Putri Aftiana on 18/06/26.
+//
+
+
 import SwiftUI
 
 struct ComicReadingView: View {
@@ -8,20 +16,87 @@ struct ComicReadingView: View {
     
     var body: some View {
         ZStack {
-            // ── 1. Main Comic Content (Black Background) ───────────────────
+            // ── 1. Main Comic Content & End Section (Black Background) ─────────
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
                     // Placeholder for long vertical comic panels
-                    ForEach(0..<5, id: \.self) { _ in
-                        Rectangle()
-                            .fill(Color.black)
-                            // Giving it a tall height to simulate long panels
-                            .frame(height: 800)
+                    ForEach(0..<3, id: \.self) { index in
+                        ZStack {
+                            Rectangle()
+                                .fill(Color(white: 0.1))
+                                .frame(height: 600)
+                            Text("Comic Panel \(index + 1)")
+                                .foregroundColor(.white.opacity(0.3))
+                        }
                     }
+                    
+                    // ── END OF CHAPTER SECTION ──
+                    VStack(spacing: 32) {
+                        Text("- End of Chapter -")
+                            .font(.otherTitle)
+                            .foregroundColor(.panelSecondary)
+                            .padding(.top, 40)
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            HStack {
+                                Text("Comments (127)")
+                                    .font(.otherTitle)
+                                    .foregroundColor(.panelWhite)
+                                
+                                Spacer()
+                                
+                                NavigationLink(destination: CommentsFullView()) {
+                                    Text("See All")
+                                        .font(.seeAll)
+                                        .foregroundColor(.white)
+                                        .underline()
+                                }
+                            }
+                            
+                            // Fake "Post a comment" input box
+                            NavigationLink(destination: CommentsFullView()) {
+                                HStack {
+                                    Circle()
+                                        .fill(Color(white: 0.85))
+                                        .frame(width: 32, height: 32)
+                                    
+                                    Text("Post a comment...")
+                                        .font(.subheadline)
+                                        .foregroundColor(.black.opacity(0.7))
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "paperplane.fill")
+                                        .foregroundColor(.panelDark)
+                                }
+                                .padding(12)
+                                .background(Color.panelSecondary)
+                                .cornerRadius(25)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            // Using your existing DynamicCommentCard
+                            DynamicCommentCard(
+                                username: "The Username",
+                                commentText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet vestibulum lorem. Vivamus posuere convallis est, a porttitor odio tempor non. Sed lobortis aliquet convallis. Maecenas",
+                                likes: 119,
+                                replies: 1000
+                            )
+                            
+                            DynamicCommentCard(
+                                username: "The Username",
+                                commentText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet vestibulum lorem. Vivamus posuere convallis est, a porttitor odio tempor non. Sed lobortis aliquet convallis. Maecenas",
+                                likes: 119,
+                                replies: 1000
+                            )
+                        }
+                        .padding(.horizontal, 24)
+                    }
+                    .padding(.bottom, 150) // Room for the bottom toolbar
                 }
             }
             .ignoresSafeArea()
-            .background(Color.black)
+            .background(Color.panelDark)
             
             // ── 2. Overlay Toolbars ─────────────────────────────────────────
             VStack {
@@ -52,13 +127,14 @@ struct ComicReadingView: View {
                     }) {
                         Image(systemName: isLoved ? "heart.fill" : "heart")
                             .font(.system(size: 22, weight: .semibold))
-                            .foregroundColor(isLoved ? .red : .black)
+                            .foregroundColor(isLoved ? .red : .panelDark)
                     }
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 56)
                 .padding(.bottom, 16)
-                .background(Color.panelSecondary) // UPDATED HERE
+                .background(Color(UIColor.systemGray6))
+                .ignoresSafeArea(edges: .top)
                 
                 Spacer()
                 
@@ -70,86 +146,70 @@ struct ComicReadingView: View {
                     }) {
                         Image(systemName: "sun.max")
                             .font(.system(size: 22))
-                            .foregroundColor(.black)
+                            .foregroundColor(.panelDark)
                     }
                     
                     Spacer()
                     
                     HStack(spacing: 16) {
-                        Button(action: {
-                            // TODO: Go to Previous Chapter
-                        }) {
+                        Button(action: { /* Previous */ }) {
                             Image(systemName: "backward.end")
                                 .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(.panelDark)
                                 .frame(width: 54, height: 54)
-                                // 1. The frosted glass background
                                 .background(.ultraThinMaterial)
                                 .clipShape(Circle())
-                                // 2. The light-catching rim
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.white.opacity(0.6), lineWidth: 0)
-                                )
-                                // 3. The soft drop shadow for depth
+                                .overlay(Circle().stroke(Color.white.opacity(0.6), lineWidth: 0))
                                 .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
                         }
                         
-                        Button(action: {
-                            // TODO: Open Chapter List
-                        }) {
+                        Button(action: { /* Chapter List */ }) {
                             Image(systemName: "list.bullet")
                                 .font(.system(size: 28, weight: .semibold))
                                 .foregroundColor(.panelDark)
                                 .frame(width: 72, height: 72)
                                 .background(.ultraThinMaterial)
                                 .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.white.opacity(0.6), lineWidth: 0)
-                                )
+                                .overlay(Circle().stroke(Color.white.opacity(0.6), lineWidth: 0))
                                 .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 5)
                         }
                         
-                        Button(action: {
-                            // TODO: Go to Next Chapter
-                        }) {
+                        Button(action: { /* Next */ }) {
                             Image(systemName: "forward.end")
                                 .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(.panelDark)
                                 .frame(width: 54, height: 54)
                                 .background(.ultraThinMaterial)
                                 .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.white.opacity(0.6), lineWidth: 0)
-                                )
+                                .overlay(Circle().stroke(Color.white.opacity(0.6), lineWidth: 0))
                                 .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
                         }
                     }
                     
                     Spacer()
                     
-                    Button(action: {
-                        // TODO: Open Settings
-                    }) {
+                    Button(action: { /* Settings */ }) {
                         Image(systemName: "gearshape")
                             .font(.system(size: 22))
-                            .foregroundColor(.black)
+                            .foregroundColor(.panelDark)
                     }
                     Spacer()
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 16)
-                .padding(.bottom, 34) // Account for the home indicator
-                .background(Color.panelSecondary) // UPDATED HERE
+                .padding(.bottom, 34)
+                .background(Color(UIColor.systemGray6))
+                .ignoresSafeArea(edges: .bottom)
             }
-            .ignoresSafeArea()
         }
-        .navigationBarHidden(true) // Hides the default nav bar so our custom one shows
+        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
+
 #Preview {
-    ComicReadingView(chapterNumber: 10)
+    NavigationStack {
+        ComicReadingView(chapterNumber: 10)
+    }
 }

@@ -118,7 +118,7 @@ struct AuthView: View {
                 .padding(.horizontal, 40)
                 .padding(.bottom, 24)
             }
-            .background(Color.white.ignoresSafeArea())
+            .background(Color(UIColor.systemGray6).ignoresSafeArea())
             .navigationDestination(isPresented: $navigateToHome) {
                 ContentView()
             }

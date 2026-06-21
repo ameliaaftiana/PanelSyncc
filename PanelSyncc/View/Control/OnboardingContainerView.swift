@@ -89,7 +89,7 @@ struct OnboardingContainerView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 16)
         }
-        .background(Color.white)
+        .background(Color(UIColor.systemGray6).ignoresSafeArea())
     }
 }
 

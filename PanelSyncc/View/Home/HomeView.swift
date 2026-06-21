@@ -1,3 +1,11 @@
+//
+//  HomeView.swift
+//  PanelSyncc
+//
+//  Created by Amelia Putri Aftiana on 18/06/26.
+//
+
+
 import SwiftUI
 
 struct HomeView: View {
@@ -6,7 +14,7 @@ struct HomeView: View {
     @State private var selectedWebtoon: Webtoon? = nil
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 // MARK: - Custom Header
                 HStack {
@@ -22,7 +30,7 @@ struct HomeView: View {
                         Image(systemName: "bell.badge")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.black)
-                            .padding(12)
+                            .padding(16)
                             .background(Color.white)
                             .clipShape(Circle())
                             .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -56,6 +64,7 @@ struct HomeView: View {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 16) {
                                     ForEach(dataLoader.webtoons.prefix(5)) { webtoon in
+                                        // FIX: Use your built-in onTap parameter instead of a Button wrapper!
                                         TopPicksCard(
                                             title: webtoon.title,
                                             description: webtoon.summary,
@@ -64,11 +73,11 @@ struct HomeView: View {
                                             rating: webtoon.rating,
                                             readers: parseCount(webtoon.view),
                                             loves: parseCount(webtoon.like),
-                                            bookmarks: parseCount(webtoon.subscribe)
+                                            bookmarks: parseCount(webtoon.subscribe),
+                                            onTap: {
+                                                selectedWebtoon = webtoon // Triggers navigation!
+                                            }
                                         )
-                                        .onTapGesture {
-                                            selectedWebtoon = webtoon
-                                        }
                                     }
                                 }
                                 .padding(.horizontal)
@@ -77,7 +86,7 @@ struct HomeView: View {
                         .padding(.top, 16)
 
                         // MARK: - Section 2: Continue Reading
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Text("Continue Reading")
                                     .font(.otherTitle)
@@ -94,16 +103,17 @@ struct HomeView: View {
                             .padding(.horizontal)
 
                             ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 16) {
+                                HStack(spacing: 4) {
                                     ForEach(dataLoader.webtoons.dropFirst(5).prefix(5)) { webtoon in
+                                        // FIX: Use your built-in onTap parameter!
                                         PortraitComicCardSmaller(
                                             title: webtoon.title,
                                             lastChap: "Chap \(webtoon.episodes)",
-                                            imageUrl: webtoon.thumbnail
+                                            imageUrl: webtoon.thumbnail,
+                                            onTap: {
+                                                selectedWebtoon = webtoon
+                                            }
                                         )
-                                        .onTapGesture {
-                                            selectedWebtoon = webtoon
-                                        }
                                     }
                                 }
                                 .padding(.horizontal)
@@ -130,15 +140,16 @@ struct HomeView: View {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 16) {
                                     ForEach(dataLoader.webtoons.dropFirst(10)) { webtoon in
+                                        // FIX: Use your built-in onTap parameter!
                                         PortraitComicCard(
                                             title: webtoon.title,
                                             rating: webtoon.ratingFormatted,
                                             readers: webtoon.view,
-                                            imageUrl: webtoon.thumbnail
+                                            imageUrl: webtoon.thumbnail,
+                                            onTap: {
+                                                selectedWebtoon = webtoon
+                                            }
                                         )
-                                        .onTapGesture {
-                                            selectedWebtoon = webtoon
-                                        }
                                     }
                                 }
                                 .padding(.horizontal)
@@ -150,17 +161,9 @@ struct HomeView: View {
             }
             .navigationBarHidden(true)
             .background(Color(UIColor.systemGray6).ignoresSafeArea())
-            .background(
-                NavigationLink(
-                    destination: selectedWebtoon.map { webtoon in
-                        ComicDetailViewWrapper(webtoon: webtoon, dataLoader: dataLoader)
-                    },
-                    isActive: Binding(
-                        get: { selectedWebtoon != nil },
-                        set: { if !$0 { selectedWebtoon = nil } }
-                    )
-                ) { EmptyView() }
-            )
+            .navigationDestination(item: $selectedWebtoon) { webtoon in
+                ComicDetailViewWrapper(webtoon: webtoon, dataLoader: dataLoader)
+            }
         }
         .onAppear {
             dataLoader.loadFromBundle()
@@ -168,39 +171,17 @@ struct HomeView: View {
     }
 
     // MARK: - Helper Methods
-
-    /// Converts formatted string numbers (e.g., "1.5M", "125mil", "10k", "1,500") to integers.
     private func parseCount(_ stringValue: String) -> Int {
         let cleanStr = stringValue.lowercased().replacingOccurrences(of: ",", with: "")
-
-        // Extract only the numbers and decimal point
         let numbersOnly = cleanStr.filter { "0123456789.".contains($0) }
         guard let number = Double(numbersOnly) else { return 0 }
 
-        // Multiply based on suffixes
         if cleanStr.contains("m") || cleanStr.contains("mil") {
             return Int(number * 1_000_000)
         } else if cleanStr.contains("k") {
             return Int(number * 1_000)
         }
-
         return Int(number)
-    }
-}
-
-// MARK: - ComicDetailViewWrapper
-struct ComicDetailViewWrapper: View {
-    let webtoon: Webtoon
-    @ObservedObject var dataLoader: WebtoonDataLoader
-
-    var body: some View {
-        ComicDetailView(
-            webtoon: webtoon,
-            chapters: dataLoader.chapters,
-            comments: dataLoader.comments,
-            featuredCollections: dataLoader.collections,
-            peopleAlsoLike: []
-        )
     }
 }
 

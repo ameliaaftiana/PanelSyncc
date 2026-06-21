@@ -1,10 +1,19 @@
+//
+//  ProfileView.swift
+//  PanelSyncc
+//
+//  Created by Amelia Putri Aftiana on 19/06/26.
+//
+
+
 import SwiftUI
 
 // MARK: - Main Profile View
 
 struct ProfileView: View {
     var body: some View {
-        NavigationView {
+        // 1. CHANGED: Use NavigationStack instead of NavigationView
+        NavigationStack {
             VStack(spacing: 0) {
                 HStack {
                     Text("Profile")
@@ -19,7 +28,7 @@ struct ProfileView: View {
                         Image(systemName: "ellipsis")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.black)
-                            .padding(12)
+                            .padding(18)
                             .background(Color.white)
                             .clipShape(Circle())
                             .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -27,7 +36,7 @@ struct ProfileView: View {
                 }
                 .padding(.horizontal)
                 .padding(.top, 10)
-                .padding(.bottom, 12)
+                .padding(.bottom, 20)
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 20) {
@@ -48,6 +57,7 @@ struct ProfileView: View {
                                     .multilineTextAlignment(.center)
                             }
                         }
+                        Spacer()
 
                         // ── 3. Menu Group 1 ────────────────────────────────────
                         VStack(spacing: 0) {
@@ -61,7 +71,11 @@ struct ProfileView: View {
 
                         // ── 4. Menu Group 2 ────────────────────────────────────
                         VStack(spacing: 0) {
-                            ProfileMenuRow(iconName: "location.north.circle", title: "Creator Studio", showDivider: true)
+                            // This NavigationLink now correctly pushes onto the NavigationStack
+                            NavigationLink(destination: CreatorStudioView()) {
+                                ProfileMenuRow(iconName: "location.north.circle", title: "Creator Studio", showDivider: false)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
                         .background(Color.panelSecondary)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -84,6 +98,7 @@ struct ProfileView: View {
         }
     }
 }
+
 
 // MARK: - Preview
 #Preview {

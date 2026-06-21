@@ -2,8 +2,9 @@
 //  RankView.swift
 //  PanelSyncc
 //
-//  Created by Amelia Putri Aftiana on 19/06/26.
+//  Created by Amelia Putri Aftiana on 18/06/26.
 //
+
 
 import SwiftUI
 
@@ -17,7 +18,6 @@ struct RankView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-
             // MARK: - Custom Header
             HStack {
                 // Back Button
@@ -27,7 +27,7 @@ struct RankView: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
-                        .padding(15)
+                        .padding(18)
                         .background(Color.white)
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -49,18 +49,18 @@ struct RankView: View {
                     Image(systemName: "bell.badge")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
-                        .padding(12)
+                        .padding(16)
                         .background(Color.white)
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                 }
             }
             .padding(.horizontal)
-            .padding(.top, 10) // Adjust if needed to fit nicely under the dynamic island/notch
+            .padding(.top, 10)
             .padding(.bottom, 12)
-            .background(Color(UIColor.white)) // Matches the top background color
+            .background(Color(UIColor.systemGray6))
 
-            // MARK: - Custom Tab Bar (Matching Library Style)
+            // MARK: - Custom Tab Bar
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 20) {
                     ForEach(tabs, id: \.self) { tab in
@@ -84,12 +84,13 @@ struct RankView: View {
             }
             .padding(.top, 1)
             .padding(.bottom, 10)
-            .background(Color.white)
+            .background(Color(UIColor.systemGray6))
 
             // MARK: - Scrollable Rank Content
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 24) {
                     ForEach(Array(rankedWebtoons.enumerated()), id: \.element.id) { index, webtoon in
+                        // FIX: Directly using the card's native onTap parameter to update state safely
                         RankComicCard(
                             rank: index + 1,
                             genres: [webtoon.genre],
@@ -99,29 +100,22 @@ struct RankView: View {
                             rating: Double(webtoon.rating) ?? 0.0,
                             readers: parseCount(webtoon.view),
                             loves: parseCount(webtoon.like),
-                            bookmarks: parseCount(webtoon.subscribe)
+                            bookmarks: parseCount(webtoon.subscribe),
+                            onTap: {
+                                selectedWebtoon = webtoon // Triggers the navigation stack
+                            }
                         )
-                        .onTapGesture {
-                            selectedWebtoon = webtoon
-                        }
                     }
                 }
                 .padding()
             }
         }
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
-        .navigationBarHidden(true) // Hides the default iOS Navigation Bar
-        .background(
-            NavigationLink(
-                destination: selectedWebtoon.map { webtoon in
-                    ComicDetailViewWrapper(webtoon: webtoon, dataLoader: dataLoader)
-                },
-                isActive: Binding(
-                    get: { selectedWebtoon != nil },
-                    set: { if !$0 { selectedWebtoon = nil } }
-                )
-            ) { EmptyView() }
-        )
+        .navigationBarHidden(true)
+        // Clean, centralized navigation link processing
+        .navigationDestination(item: $selectedWebtoon) { webtoon in
+            ComicDetailViewWrapper(webtoon: webtoon, dataLoader: dataLoader)
+        }
         .onAppear {
             dataLoader.loadFromBundle()
         }
@@ -135,15 +129,12 @@ struct RankView: View {
         case "Popular":
             let sorted = allItems.sorted { parseCount($0.view) > parseCount($1.view) }
             return Array(sorted.prefix(10))
-
         case "Trending":
             let sorted = allItems.sorted { parseCount($0.subscribe) > parseCount($1.subscribe) }
             return Array(sorted.prefix(10))
-
         case "Newcomer":
             let sorted = allItems.sorted { $0.episodes < $1.episodes }
             return Array(sorted.prefix(10))
-
         default:
             let filtered = allItems.filter { $0.genre.lowercased() == selectedTab.lowercased() }
             let sorted = filtered.sorted { parseCount($0.view) > parseCount($1.view) }
@@ -157,17 +148,14 @@ struct RankView: View {
         let numbersOnly = cleanStr.filter { "0123456789.".contains($0) }
         guard let number = Double(numbersOnly) else { return 0 }
 
-        if cleanStr.contains("m") || cleanStr.contains("mil") {
-            return Int(number * 1_000_000)
-        } else if cleanStr.contains("k") {
-            return Int(number * 1_000)
-        }
+        if cleanStr.contains("m") || cleanStr.contains("mil") { return Int(number * 1_000_000) }
+        else if cleanStr.contains("k") { return Int(number * 1_000) }
         return Int(number)
     }
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         RankView()
     }
 }

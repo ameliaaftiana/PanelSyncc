@@ -26,7 +26,7 @@ struct UploadComicView: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
-                        .padding(13)
+                        .padding(18)
                         .background(Color.white)
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -35,7 +35,7 @@ struct UploadComicView: View {
                 Spacer()
 
                 Text("Upload")
-                    .font(.libraryTitle)
+                    .font(.rankTitle)
                     .foregroundColor(.panelDark)
 
                 Spacer()
@@ -45,7 +45,7 @@ struct UploadComicView: View {
             }
             .padding(.horizontal)
             .padding(.top, 10)
-            .padding(.bottom, 12)
+            .padding(.bottom, 20)
 
             // ── 2. Scrollable Form Content ───────────────────────────────
             ScrollView(showsIndicators: false) {
@@ -54,8 +54,7 @@ struct UploadComicView: View {
                     // Cover Upload Area
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Cover")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.otherTitle)
 
                         Button(action: {
                             // TODO: Select Image Action
@@ -70,8 +69,7 @@ struct UploadComicView: View {
                     // Title Input
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Title")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.otherTitle)
 
                         TextField("Enter comic title", text: $comicTitle)
                             .padding()
@@ -84,8 +82,7 @@ struct UploadComicView: View {
                     // Genres Input
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Genres")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.otherTitle)
 
                         TextField("e.g., Action, Fantasy, Romance", text: $genres)
                             .foregroundColor(.white)
@@ -98,8 +95,7 @@ struct UploadComicView: View {
                     // Synopsis Input
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Synopsis")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.otherTitle)
 
                         ZStack(alignment: .topLeading) {
                             if synopsis.isEmpty {
@@ -117,17 +113,17 @@ struct UploadComicView: View {
                         }
                     }
 
-                    Spacer(minLength: 24)
+                    Spacer(minLength: 0)
 
                     // ── 3. Continue Button ─────────────────────────────────
                     PrimaryButton(title: "Continue") {
                         navigateToChapter = true
                     }
                 }
-                .padding(24)
+                .padding(.horizontal)
             }
         }
-        .background(Color.white.ignoresSafeArea())
+        .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $navigateToChapter) {
             UploadChapterView(seriesTitle: comicTitle.isEmpty ? "Comic Title" : comicTitle)
