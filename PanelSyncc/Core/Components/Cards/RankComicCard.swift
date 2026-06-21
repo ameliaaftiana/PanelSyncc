@@ -5,22 +5,20 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct RankComicCard: View {
     let rank: Int
-    let genres: [String] // Array of genres
+    let genres: [String]
     let title: String
     let description: String
-    let imageUrl: String // Placeholder for AsyncImage
-    
-    // Stats
+    let imageUrl: String
     let rating: Double
     let readers: Int
     let loves: Int
     let bookmarks: Int
-    
+    var onTap: (() -> Void)? = nil
+
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             // 1. Rank Number
@@ -29,19 +27,31 @@ struct RankComicCard: View {
                 .foregroundColor(.white)
                 .frame(width: 24, alignment: .leading)
             
-            // 2. Image Placeholder
-            Rectangle()
-                .fill(Color.gray.opacity(0.4))
-                // UPDATED: Height is 150 for rank 1, and 100 for the rest
-                .frame(
-                    width: rank == 1 ? 100 : 100,
-                    height: rank == 1 ? 120 : 90
-                )
-                .cornerRadius(2)
-                .overlay(
-                    Image(systemName: "photo")
-                        .foregroundColor(.gray.opacity(0.8))
-                )
+            // 2. Real Image Loading (Replaced Rectangle with AsyncImage)
+            AsyncImage(url: URL(string: imageUrl)) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } else if phase.error != nil {
+                    // Fallback if image fails to load
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.4))
+                        .overlay(Image(systemName: "photo").foregroundColor(.gray.opacity(0.8)))
+                } else {
+                    // Fallback while loading
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.4))
+                        .overlay(ProgressView())
+                }
+            }
+            // Retained your logic to make Rank 1 taller
+            .frame(
+                width: 100,
+                height: rank == 1 ? 120 : 90
+            )
+            .cornerRadius(2)
+            .clipped()
             
             // 3. Content
             VStack(alignment: .leading, spacing: 6) {
@@ -49,7 +59,7 @@ struct RankComicCard: View {
                 // Genre
                 Text(genres.prefix(3).joined(separator: " • "))
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(Color(red: 0.6, green: 0.8, blue: 1.0)) 
+                    .foregroundColor(Color(red: 0.6, green: 0.8, blue: 1.0))
                 
                 // Title
                 Text(title)
@@ -84,7 +94,7 @@ struct RankComicCard: View {
                 Text(description)
                     .font(.rankCardFontDescription)
                     .foregroundColor(.white.opacity(0.7))
-                    .lineLimit(rank == 1 ? 4 : 2) // Gave rank 1 an extra line since the image is taller now!
+                    .lineLimit(rank == 1 ? 4 : 2)
                     .padding(.top, 2)
             }
             
@@ -94,13 +104,16 @@ struct RankComicCard: View {
         .background(Color.panelDark)
         .cornerRadius(12)
         .frame(height: rank == 1 ? 140 : 100)
+        .onTapGesture {
+            onTap?()
+        }
     }
 }
 
 // Preview
 #Preview {
     ZStack {
-        Color(UIColor.darkGray).ignoresSafeArea() 
+        Color(UIColor.darkGray).ignoresSafeArea()
         
         VStack(spacing: 20) {
             RankComicCard(
@@ -108,7 +121,7 @@ struct RankComicCard: View {
                 genres: ["Cyberpunk", "Action", "Sci-Fi"],
                 title: "Neon Ashes of Sector 7",
                 description: "A rogue AI navigates the dangerous underbelly of a futuristic metropolis, seeking answers to its own existence while hunted by corporate mercenaries.",
-                imageUrl: "",
+                imageUrl: "https://picsum.photos/200/300", // Will load real image now
                 rating: 4.9,
                 readers: 2500000,
                 loves: 89000,
@@ -120,7 +133,7 @@ struct RankComicCard: View {
                 genres: ["Fantasy", "Romance"],
                 title: "The Duke's Secret",
                 description: "When an ordinary librarian accidentally discovers the cursed Duke's hidden magical affinity, she is swept into a world of court politics.",
-                imageUrl: "",
+                imageUrl: "https://picsum.photos/201/300", // Will load real image now
                 rating: 4.7,
                 readers: 950000,
                 loves: 42100,

@@ -18,19 +18,17 @@ struct InboxPage: View {
 
 struct FriendsPageView: View {
     @State private var searchText: String = ""
-    
+
     var body: some View {
-        // 1. Wrap the entire view content in a NavigationStack
-        NavigationStack {
-            VStack(spacing: 0) {
+        VStack(spacing: 0) {
                 // Header Section
                 HStack {
                     Text("Friends")
                         .font(.libraryTitle)
                         .foregroundColor(.panelDark)
-                    
+
                     Spacer()
-                    
+
                     HStack(spacing: 12) {
                         Button(action: {
                             print("Add Friend Tapped")
@@ -43,8 +41,8 @@ struct FriendsPageView: View {
                                 .clipShape(Circle())
                                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                         }
-                   
-                        NavigationLink(destination: InboxPage()) {
+
+                        NavigationLink(destination: MessagesView()) {
                             Image(systemName: "tray")
                                 .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(.black)
@@ -52,52 +50,54 @@ struct FriendsPageView: View {
                                 .background(Color.white)
                                 .clipShape(Circle())
                                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                        }                        
+                        }
                     }
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 60)
-                .padding(.bottom, 20)
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color(UIColor.systemGray4), Color.white]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .ignoresSafeArea(edges: .top)
-                )
-                
+                .padding(.horizontal)
+                .padding(.top, 10)
+                .padding(.bottom, 12)
+
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 24) {
-                        
+
                         // Search Bar
-                        HStack {
+                        HStack(spacing: 12) {
                             Image(systemName: "magnifyingglass")
-                                .foregroundColor(.panelPrimary)
-                            
+                                .foregroundColor(.gray)
+                                .font(.system(size: 16, weight: .medium))
+
                             TextField("Search", text: $searchText)
-                                .foregroundColor(.panelDark)
-                            
+                                .font(.subheadline)
+                                .foregroundColor(.black)
+
+                            if !searchText.isEmpty {
+                                Button(action: { searchText = "" }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+
                             Image(systemName: "mic")
-                                .foregroundColor(.panelPrimary)
+                                .foregroundColor(.gray)
+                                .font(.system(size: 16, weight: .medium))
                         }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                                .background(Color.white)
-                        )
-                        .padding(.horizontal, 24)
-                        
+                        .padding(.horizontal, 16)
+                        .frame(height: 50)
+                        .background(Color.white)
+                        .cornerRadius(25)
+                        .shadow(color: .black.opacity(0.05), radius: 6, x: 0, y: 3)
+                        .padding(.horizontal)
+                        .padding(.bottom, 8)
+
                         // Pending Request Section
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Text("Pending Request")
                                     .font(.otherTitle)
                                     .foregroundColor(.panelDark)
-                                
+
                                 Spacer()
-                                
+
                                 Button(action: {
                                     print("See All Tapped")
                                 }) {
@@ -107,8 +107,8 @@ struct FriendsPageView: View {
                                         .underline()
                                 }
                             }
-                            .padding(.horizontal, 24)
-                            
+                            .padding(.horizontal)
+
                             VStack(spacing: 12) {
                                 FriendRequestRow(
                                     username: "NeonShadow",
@@ -123,30 +123,30 @@ struct FriendsPageView: View {
                                     declineAction: {}
                                 )
                             }
-                            .padding(.horizontal, 24)
+                            .padding(.horizontal)
                         }
-                        
+
                         // Online Friends Section
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Online - 1")
                                 .font(.otherTitle)
                                 .foregroundColor(.panelDark)
-                                .padding(.horizontal, 24)
-                            
+                                .padding(.horizontal)
+
                             OnlineFriendRow(
                                 username: "Kim Mingyu",
                                 readingStatus: "My Friend is Zombie!"
                             )
-                            .padding(.horizontal, 24)
+                            .padding(.horizontal)
                         }
-                        
+
                         // Friends List Section
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Friends List")
                                 .font(.otherTitle)
                                 .foregroundColor(.panelDark)
-                                .padding(.horizontal, 24)
-                            
+                                .padding(.horizontal)
+
                             VStack(spacing: 12) {
                                 FriendsListRow(
                                     username: "Kim Mingyu",
@@ -169,18 +169,15 @@ struct FriendsPageView: View {
                                     timeAgo: "10m ago"
                                 )
                             }
-                            .padding(.horizontal, 24)
-                            .padding(.bottom, 100) // Extra padding for the floating tab bar
+                            .padding(.horizontal)
+                            .padding(.bottom, 100)
                         }
                     }
                     .padding(.top, 8)
+                    .padding(.bottom, 30)
                 }
             }
-            .background(Color.white)
-            .ignoresSafeArea(.all, edges: .top)
-            // Hide the default navigation bar so it doesn't duplicate your custom header
-            .navigationBarHidden(true)
-        }
+        .background(Color(UIColor.systemGray6).ignoresSafeArea())
     }
 }
 

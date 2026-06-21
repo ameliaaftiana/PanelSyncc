@@ -344,6 +344,9 @@ extension Webtoon {
 // MARK: - Data Loader
 class WebtoonDataLoader: ObservableObject {
     @Published var webtoons: [Webtoon] = []
+    @Published var comments: [ComicComment] = []
+    @Published var chapters: [ComicChapter] = []
+    @Published var collections: [ComicCollection] = []
     
     /// Load all webtoons from the bundled JSON file
     func loadFromBundle(filename: String = "webtoon_combined") {
@@ -376,6 +379,69 @@ class WebtoonDataLoader: ObservableObject {
     func topRated(limit: Int = 10) -> [Webtoon] {
         webtoons.sorted { $0.rating > $1.rating }.prefix(limit).map { $0 }
     }
+    
+    /// Load comments for a specific comic ID
+    func loadComments(for comicId: Int, filename: String = "comments") {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            print("Could not find \(filename).json in bundle")
+            return
+        }
+        
+        do {
+            // Set up a custom decoder to handle the ISO8601 date strings
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            
+            let allComments = try decoder.decode([ComicComment].self, from: data)
+            
+            // Filter the comments so we only show the ones belonging to the selected comic
+            self.comments = allComments.filter { $0.comicId == comicId }
+            
+        } catch {
+            print("Decode error for comments: \(error)")
+        }
+    }
+    /// Load chapters for a specific comic ID
+    func loadChapters(for comicId: Int, filename: String = "chapters") {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
+              let data = try? Data(contentsOf: url) else { return }
+        do {
+            let allChapters = try JSONDecoder().decode([ComicChapter].self, from: data)
+            self.chapters = allChapters.filter { $0.comicId == comicId }
+        } catch {
+            print("Decode error for chapters: \(error)")
+        }
+    }
+    
+    /// Load featured collections
+    func loadCollections(filename: String = "collections") {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
+              let data = try? Data(contentsOf: url) else { return }
+        do {
+            self.collections = try JSONDecoder().decode([ComicCollection].self, from: data)
+        } catch {
+            print("Decode error for collections: \(error)")
+        }
+    }
+    
+    // Call this to load everything at once
+    func loadAllData(for comicId: Int) {
+        loadWebtoons()
+        loadComments(for: comicId)
+        loadChapters(for: comicId)
+        loadCollections()
+    }
+    
+    func loadWebtoons(filename: String = "webtoon_combined") {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
+              let data = try? Data(contentsOf: url) else { return }
+        do {
+            webtoons = try JSONDecoder().decode([Webtoon].self, from: data)
+        } catch {
+            print("Decode error webtoons: \(error)")
+        }
+    }
 }
 
 // MARK: - Thumbnail Image View
@@ -387,7 +453,7 @@ struct WebtoonThumbnailView: View {
     var width: CGFloat = 120
     var height: CGFloat = 168
     var cornerRadius: CGFloat = 10
-
+    
     var body: some View {
         AsyncImage(url: URL(string: url)) { phase in
             switch phase {
@@ -421,42 +487,42 @@ struct WebtoonThumbnailView: View {
 
 // MARK: - Ranking Helpers
 extension WebtoonDataLoader {
-
+    
     /// Parses "874M", "46.2K", "2,300" → Double for sorting
     func parseCount(_ raw: String) -> Double {
         let clean = raw.trimmingCharacters(in: .whitespaces)
-                       .replacingOccurrences(of: ",", with: "")
+            .replacingOccurrences(of: ",", with: "")
         if clean.hasSuffix("M"), let n = Double(clean.dropLast()) { return n * 1_000_000 }
         if clean.hasSuffix("K"), let n = Double(clean.dropLast()) { return n * 1_000 }
         return Double(clean) ?? 0
     }
-
+    
     /// Popularity — sorted by subscribers (highest first)
     func popularityRank(limit: Int = 100) -> [Webtoon] {
         webtoons.sorted { parseCount($0.subscribe) > parseCount($1.subscribe) }
-                .prefix(limit).map { $0 }
+            .prefix(limit).map { $0 }
     }
-
+    
     /// Trending — sorted by total views (highest first)
     func trendingRank(limit: Int = 100) -> [Webtoon] {
         webtoons.sorted { parseCount($0.view) > parseCount($1.view) }
-                .prefix(limit).map { $0 }
+            .prefix(limit).map { $0 }
     }
-
+    
     /// New Comer — ongoing webtoons with ≤ 30 episodes, sorted by fewest episodes first
     func newcomerRank(limit: Int = 100) -> [Webtoon] {
         webtoons.filter { $0.status == .ongoing && $0.episodes <= 30 }
-                .sorted { $0.episodes < $1.episodes }
-                .prefix(limit).map { $0 }
+            .sorted { $0.episodes < $1.episodes }
+            .prefix(limit).map { $0 }
     }
-
+    
     /// Genre Rank — top-rated webtoons for a specific genre
     func genreRank(genre: String, limit: Int = 100) -> [Webtoon] {
         webtoons.filter { $0.genre == genre }
-                .sorted { $0.rating > $1.rating }
-                .prefix(limit).map { $0 }
+            .sorted { $0.rating > $1.rating }
+            .prefix(limit).map { $0 }
     }
-
+    
     /// All unique genres available
     func allGenres() -> [String] {
         Array(Set(webtoons.map(\.genre))).sorted()

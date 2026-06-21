@@ -21,7 +21,6 @@ struct PrimaryButton: View {
                 .padding(.vertical, 16)
                 .background(Color.panelDark)
                 .cornerRadius(12)
-//                .padding(.horizontal, 24)
                 .padding(.top, 10)
                 .padding(.bottom)
         }

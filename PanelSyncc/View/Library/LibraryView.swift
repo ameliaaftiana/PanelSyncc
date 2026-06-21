@@ -11,11 +11,12 @@ import SwiftUI
 struct LibraryView: View {
     // 1. Initialize your database/data loader
     @StateObject private var dataLoader = WebtoonDataLoader()
-    
+    @State private var selectedWebtoon: Webtoon? = nil
+
     // 2. State for the selected tab
     @State private var selectedTab: String = "Current Reading"
     let tabs = ["Current Reading", "Plan to Read", "Completed", "Download", "Others"]
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -24,23 +25,25 @@ struct LibraryView: View {
                     Text("Library")
                         .font(.libraryTitle)
                         .foregroundColor(.panelDark)
-                    
+
                     Spacer()
-                    
+
                     NavigationLink {
                         Text("Notification View")
                     } label: {
                         Image(systemName: "bell.badge")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.black)
-                            .frame(width: 32, height: 32)
-                            .background(.regularMaterial, in: Circle())
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.black)
+                            .padding(12)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                     }
                 }
                 .padding(.horizontal)
                 .padding(.top, 10)
                 .padding(.bottom, 12)
-                
+
                 // MARK: - Custom Tab Bar
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
@@ -49,7 +52,7 @@ struct LibraryView: View {
                                 Text(tab)
                                     .font(selectedTab == tab ? .libraryMenuSelected : .libraryMenuUnSelected)
                                     .foregroundColor(selectedTab == tab ? .panelDark : .panelPrimary)
-                                
+
                                 Rectangle()
                                     .fill(selectedTab == tab ? Color.black : Color.clear)
                                     .frame(height: 2)
@@ -64,7 +67,7 @@ struct LibraryView: View {
                     .padding(.horizontal)
                 }
                 .padding(.bottom, 8)
-                
+
                 // MARK: - Scrollable Dynamic Content
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVStack(spacing: 14) {
@@ -80,6 +83,9 @@ struct LibraryView: View {
                                 loves: parseCount(webtoon.like),
                                 bookmarks: parseCount(webtoon.subscribe)
                             )
+                            .onTapGesture {
+                                selectedWebtoon = webtoon
+                            }
                         }
                     }
                     .padding()
@@ -87,15 +93,26 @@ struct LibraryView: View {
             }
             // Matching the light gray app background from the screenshot
             .background(Color(UIColor.systemGray6).ignoresSafeArea())
-            .navigationBarHidden(true) 
+            .navigationBarHidden(true)
+            .background(
+                NavigationLink(
+                    destination: selectedWebtoon.map { webtoon in
+                        ComicDetailViewWrapper(webtoon: webtoon, dataLoader: dataLoader)
+                    },
+                    isActive: Binding(
+                        get: { selectedWebtoon != nil },
+                        set: { if !$0 { selectedWebtoon = nil } }
+                    )
+                ) { EmptyView() }
+            )
             .onAppear {
                 dataLoader.loadFromBundle()
             }
         }
     }
-    
+
     // MARK: - Filter Logic
-    
+
     /// Returns a different list of data depending on the selected tab
     private var filteredWebtoons: [Webtoon] {
         switch selectedTab {
@@ -118,15 +135,15 @@ struct LibraryView: View {
             return dataLoader.webtoons
         }
     }
-    
+
     // MARK: - Helper Methods
-    
+
     /// Converts formatted string numbers (e.g., "1.5M", "10k") to integers.
     private func parseCount(_ stringValue: String) -> Int {
         let cleanStr = stringValue.lowercased().replacingOccurrences(of: ",", with: "")
         let numbersOnly = cleanStr.filter { "0123456789.".contains($0) }
         guard let number = Double(numbersOnly) else { return 0 }
-        
+
         if cleanStr.contains("m") || cleanStr.contains("mil") {
             return Int(number * 1_000_000)
         } else if cleanStr.contains("k") {

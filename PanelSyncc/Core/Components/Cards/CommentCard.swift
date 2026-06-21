@@ -76,11 +76,10 @@ struct DynamicCommentCard: View {
 // Preview showing a short comment vs a very long comment
 #Preview {
     ZStack {
-        Color.black.ignoresSafeArea() // Black background to see the gray cards
+        Color.black.ignoresSafeArea()
         
         ScrollView {
             VStack(spacing: 16) {
-                // Example 1: Short Comment
                 DynamicCommentCard(
                     username: "The Username",
                     commentText: "Short comment here!",

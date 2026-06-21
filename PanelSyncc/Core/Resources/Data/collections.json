@@ -1,0 +1,14 @@
+[
+  {
+    "id": "col-001",
+    "title": "Fantasy Essentials",
+    "author": "Curator",
+    "image_url": "https://picsum.photos/seed/col1/150/100"
+  },
+  {
+    "id": "col-002",
+    "title": "Top Rated 2026",
+    "author": "Admin",
+    "image_url": "https://picsum.photos/seed/col2/150/100"
+  }
+]

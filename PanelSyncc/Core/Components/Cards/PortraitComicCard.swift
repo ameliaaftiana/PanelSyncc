@@ -13,7 +13,8 @@ struct PortraitComicCard: View {
     let rating: String     // e.g., "4.8"
     let readers: String    // e.g., "1.2M" or "10k"
     let imageUrl: String
-    
+    var onTap: (() -> Void)? = nil
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             
@@ -23,7 +24,6 @@ struct PortraitComicCard: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } placeholder: {
-                // Keeps your original gray placeholder while loading
                 Rectangle()
                     .fill(Color.gray.opacity(0.3))
                     .overlay(
@@ -65,7 +65,10 @@ struct PortraitComicCard: View {
                 .lineLimit(1)
             }
         }
-        .frame(width: 110) // Adjust width based on your grid needs
+        .frame(width: 110)
+        .onTapGesture {
+            onTap?()
+        }
     }
 }
 

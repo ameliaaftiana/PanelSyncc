@@ -11,7 +11,7 @@ import SwiftUI
 struct SecondaryButton: View {
     let title: String
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(title)
@@ -21,8 +21,6 @@ struct SecondaryButton: View {
                 .padding(.vertical, 16)
                 .background(Color.panelPrimary)
                 .cornerRadius(12)
-                .padding(.top, 10)
-                .padding(.bottom)
         }
     }
 }

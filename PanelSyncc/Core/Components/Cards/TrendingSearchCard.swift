@@ -1,15 +1,17 @@
 //
-//  PortraitComicCardSmaller.swift
+//  TrendingSearchCard.swift
 //  PanelSyncc
 //
-//  Created by Amelia Putri Aftiana on 17/06/26.
+//  Created by Amelia Putri Aftiana on 19/06/26.
 //
 
 import SwiftUI
 
-struct PortraitComicCardSmaller: View {
+
+// MARK: - Mini Sub-Component for Trending Searches
+struct TrendingSearchCard: View {
     let title: String
-    let lastChap: String
+    let author: String     // Replaced lastChap with author
     let imageUrl: String
     var onTap: (() -> Void)? = nil
 
@@ -36,12 +38,12 @@ struct PortraitComicCardSmaller: View {
             // Text Content
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.comicCardPortraitTitle)
+                    .font(.comicCardPortraitTitle) // Using your custom font
                     .foregroundColor(Color(.label))
                     .lineLimit(1)
 
-                Text(lastChap)
-                    .font(.comicCardPortraitBody)
+                Text(author)
+                    .font(.comicCardPortraitBody) // Using your custom font
                     .foregroundColor(.secondary)
                     .lineLimit(1)
             }
@@ -53,11 +55,19 @@ struct PortraitComicCardSmaller: View {
     }
 }
 
-// Preview
+// Preview just for this component
 #Preview {
     HStack(spacing: 16) {
-        PortraitComicCardSmaller(title: "10th Dimension...", lastChap: "Chap 119", imageUrl: "https://picsum.photos/110/110")
-        PortraitComicCardSmaller(title: "11 of Me", lastChap: "Chap 7", imageUrl: "https://picsum.photos/110/110")
+        TrendingSearchCard(
+            title: "Neon Ashes", 
+            author: "Jane Doe", 
+            imageUrl: "https://picsum.photos/110/110"
+        )
+        TrendingSearchCard(
+            title: "The Duke's Secret", 
+            author: "John Smith", 
+            imageUrl: "https://picsum.photos/110/111"
+        )
     }
     .padding()
 }

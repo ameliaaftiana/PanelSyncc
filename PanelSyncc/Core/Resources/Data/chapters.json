@@ -1,0 +1,22 @@
+[
+  {
+    "id": "ch-010",
+    "comic_id": 1193,
+    "chapter_number": 10,
+    "title": "The Beginning",
+    "views": 12500,
+    "loves": 4500,
+    "comments": 320,
+    "image_url": "https://picsum.photos/seed/ch10/100/100"
+  },
+  {
+    "id": "ch-009",
+    "comic_id": 1193,
+    "chapter_number": 9,
+    "title": "Secrets Revealed",
+    "views": 11000,
+    "loves": 4000,
+    "comments": 290,
+    "image_url": "https://picsum.photos/seed/ch9/100/100"
+  }
+]

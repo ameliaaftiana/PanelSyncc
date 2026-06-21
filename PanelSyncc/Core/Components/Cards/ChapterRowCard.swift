@@ -14,7 +14,7 @@ struct ChapterRowCard: View {
     let views: Int
     let loves: Int
     let comments: Int
-    let imageUrl: String // Placeholder for AsyncImage
+    let imageUrl: String 
     
     // State variables for interactivity
     @State private var isLoved: Bool = false
@@ -111,7 +111,7 @@ struct ChapterRowCard: View {
             .padding(.trailing, 4)
         }
         .padding(10)
-        .frame(width: 346, height: 80)
+        .frame(height: 80)
         .background(Color.panelDark)
         .cornerRadius(12)
     }

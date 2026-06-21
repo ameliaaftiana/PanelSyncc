@@ -8,22 +8,18 @@
 import SwiftUI
 
 struct LibraryComicCard: View {
-    let genres: [String] // Array of genres
+    let genres: [String]
     let title: String
     let description: String
-    let imageUrl: String // URL string from your database
-    
-    // Stats
+    let imageUrl: String
     let rating: Double
     let readers: Int
     let loves: Int
     let bookmarks: Int
-    
+    var onTap: (() -> Void)? = nil
+
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            
-            // 2. Image using AsyncImage
-            // Safely encode the URL in case your database has spaces in the image links
             let safeUrlString = imageUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? imageUrl
             
             AsyncImage(url: URL(string: safeUrlString)) { image in
@@ -31,7 +27,6 @@ struct LibraryComicCard: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } placeholder: {
-                // Keeps your original gray placeholder while loading or if it fails
                 Rectangle()
                     .fill(Color.gray.opacity(0.4))
                     .overlay(
@@ -41,8 +36,7 @@ struct LibraryComicCard: View {
             }
             .frame(width: 100, height: 120)
             .cornerRadius(2)
-            .clipped() // Ensures the image stays within the corner radius
-            
+            .clipped()
             // 3. Content
             VStack(alignment: .leading, spacing: 6) {
                 
@@ -91,9 +85,12 @@ struct LibraryComicCard: View {
             Spacer(minLength: 0)
         }
         .padding(12)
-        .background(Color.panelDark) // Assuming this is defined in your Assets/Extensions
+        .background(Color.panelDark)
         .cornerRadius(12)
         .frame(height: 140)
+        .onTapGesture {
+            onTap?()
+        }
     }
 }
 

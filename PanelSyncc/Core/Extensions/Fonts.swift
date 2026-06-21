@@ -127,4 +127,26 @@ extension Font {
     static var friendTime: Font {
         .custom("Inter-SemiBold", size: 8, relativeTo: .caption)
     }
+    //rank
+    static var rankTitle: Font {
+        .custom("PlusJakartaSans-ExtraBold", size: 22, relativeTo: .caption)
+    }
+    
+    //search
+    static var searchText: Font {
+        .custom("PlusJakartaSans-SemiBold", size: 14, relativeTo: .caption)
+    }
+    
+    //comic detail
+    static var genreComic: Font {
+        .custom("Inter-SemiBold", size: 12, relativeTo: .caption)
+    }
+    static var subHead: Font {
+        .custom("PlusJakartaSans-Bold", size: 20, relativeTo: .caption)
+    }
+    
+    //inbox
+    static var friendChat: Font {
+        .custom("Inter-Regular", size: 12, relativeTo: .caption)
+    }
 }

@@ -16,7 +16,8 @@ struct TopPicksCard: View {
     let readers: Int
     let loves: Int
     let bookmarks: Int
-    
+    var onTap: (() -> Void)? = nil
+
     var body: some View {
         ZStack(alignment: .leading) {
             
@@ -124,6 +125,9 @@ struct TopPicksCard: View {
         }
         .frame(width: 346, height: 150)
         .cornerRadius(16)
+        .onTapGesture {
+            onTap?()
+        }
     }
 }
 
