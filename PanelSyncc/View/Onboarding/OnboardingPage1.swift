@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct OnboardingPage1: View {
@@ -13,7 +12,11 @@ struct OnboardingPage1: View {
         VStack {
             // MARK: - Middle Image Area
             Spacer()
-            // Drop your Image() here later!
+            
+            Image("Onboarding1")
+                .resizable()
+                .scaledToFit()
+                .padding(.horizontal)
             
             Spacer()
             
@@ -25,7 +28,7 @@ struct OnboardingPage1: View {
                     .foregroundColor(.panelDark)
                 
                 Text("Explore a massive library of comics. Find your next favorite series, track your progress, and rank the best reads.")
-                    .font(.onboardingDescription) 
+                    .font(.onboardingDescription)
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)

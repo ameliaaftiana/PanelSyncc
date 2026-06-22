@@ -28,7 +28,7 @@ struct ProfileView: View {
                         Image(systemName: "ellipsis")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.black)
-                            .padding(18)
+                            .padding(20)
                             .background(Color.white)
                             .clipShape(Circle())
                             .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)

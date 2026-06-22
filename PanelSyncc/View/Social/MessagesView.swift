@@ -5,13 +5,11 @@
 //  Created by Amelia Putri Aftiana on 19/06/26.
 //
 
-
 import SwiftUI
 
 struct MessagesView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var searchText: String = ""
-    @State private var showCreateMessage = false
     
     // Sample mock data for the preview
     let mockMessages = [
@@ -46,9 +44,8 @@ struct MessagesView: View {
 
                 Spacer()
 
-                Button(action: {
-                    showCreateMessage = true
-                }) {
+                // FIX: Changed from Button to NavigationLink to push the view smoothly
+                NavigationLink(destination: CreateMessagesView()) {
                     Image(systemName: "square.and.pencil")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
@@ -115,9 +112,7 @@ struct MessagesView: View {
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
         .toolbar(.hidden, for: .tabBar)
-        .fullScreenCover(isPresented: $showCreateMessage) {
-            CreateMessagesView()
-        }
+        // FIX: Removed .fullScreenCover entirely
     }
 }
 

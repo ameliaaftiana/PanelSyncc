@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 17/06/26.
 //
 
-
 import SwiftUI
 
 struct ChapterRowCard: View {
@@ -14,7 +13,7 @@ struct ChapterRowCard: View {
     let views: Int
     let loves: Int
     let comments: Int
-    let imageUrl: String 
+    let imageUrl: String
     
     // State variables for interactivity
     @State private var isLoved: Bool = false
@@ -23,20 +22,51 @@ struct ChapterRowCard: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // 1. Image Placeholder
-            Rectangle()
-                .fill(Color.gray.opacity(0.3))
+            
+            // 1. Image Thumbnail (Handles Web URLs, Local Assets, and Empty Fallbacks)
+            if imageUrl.isEmpty {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(width: 100, height: 60)
+                    .cornerRadius(4)
+                    .overlay(
+                        Image(systemName: "photo")
+                            .foregroundColor(.gray)
+                    )
+            } else if imageUrl.hasPrefix("http") {
+                AsyncImage(url: URL(string: imageUrl)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure(_):
+                        Color.gray.opacity(0.3)
+                            .overlay(Image(systemName: "photo.badge.exclamationmark").foregroundColor(.gray))
+                    case .empty:
+                        Color.gray.opacity(0.3)
+                            .overlay(ProgressView().tint(.white))
+                    @unknown default:
+                        Color.gray.opacity(0.3)
+                    }
+                }
                 .frame(width: 100, height: 60)
-                .cornerRadius(2)
-                .overlay(
-                    Image(systemName: "photo")
-                        .foregroundColor(.gray)
-                )
+                .cornerRadius(4)
+                .clipped()
+            } else {
+                // Local Asset Image
+                Image(imageUrl)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 100, height: 60)
+                    .cornerRadius(4)
+                    .clipped()
+            }
             
             // 2. Middle Text Content
             VStack(alignment: .leading, spacing: 6) {
                 Text("Ch. \(chapterNumber) - \(chapterTitle)")
-                    .font(.chapterCardTItle)
+                    .font(.chapterCardTItle) // Note: Make sure this matches your custom font
                     .foregroundColor(.white)
                     .lineLimit(1)
                 
@@ -112,7 +142,7 @@ struct ChapterRowCard: View {
         }
         .padding(10)
         .frame(height: 80)
-        .background(Color.panelDark)
+        .background(Color.panelDark) // Note: Ensure Color.panelDark is defined
         .cornerRadius(12)
     }
 }
@@ -129,7 +159,7 @@ struct ChapterRowCard: View {
                 views: 12500,
                 loves: 4500,
                 comments: 320,
-                imageUrl: ""
+                imageUrl: "04" // Testing with local asset "04"
             )
         }
     }

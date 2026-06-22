@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 21/06/26.
 //
 
-
 import SwiftUI
 
 struct GenreDetailView: View {
@@ -15,7 +14,6 @@ struct GenreDetailView: View {
     let genre: String
     @State private var selectedTab: Int = 0 // 0 = On Going, 1 = Completed
     
-    // FIX: Add state to control comic navigation inside this view
     @State private var selectedWebtoon: Webtoon? = nil
 
     let columns = [
@@ -105,7 +103,7 @@ struct GenreDetailView: View {
                 } else {
                     LazyVGrid(columns: columns, spacing: 24) {
                         ForEach(filteredWebtoons) { webtoon in
-                            // FIX: Replaced NavigationLink with a solid Button
+                            // Since GridComicCard uses the new randomizer, it automatically applies here too!
                             Button(action: {
                                 selectedWebtoon = webtoon
                             }) {
@@ -121,7 +119,6 @@ struct GenreDetailView: View {
         }
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
-        // FIX: The modern way to handle navigation inside a pushed view
         .navigationDestination(item: $selectedWebtoon) { webtoon in
             ComicDetailViewWrapper(webtoon: webtoon, dataLoader: dataLoader)
         }

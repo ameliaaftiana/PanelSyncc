@@ -27,31 +27,35 @@ struct RankComicCard: View {
                 .foregroundColor(.white)
                 .frame(width: 24, alignment: .leading)
             
-            // 2. Real Image Loading (Replaced Rectangle with AsyncImage)
-            AsyncImage(url: URL(string: imageUrl)) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } else if phase.error != nil {
-                    // Fallback if image fails to load
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.4))
-                        .overlay(Image(systemName: "photo").foregroundColor(.gray.opacity(0.8)))
-                } else {
-                    // Fallback while loading
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.4))
-                        .overlay(ProgressView())
+            // 2. Comic Cover Image (Handles Web URLs & Local Assets)
+            if imageUrl.hasPrefix("http") {
+                AsyncImage(url: URL(string: imageUrl)) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } else if phase.error != nil {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.4))
+                            .overlay(Image(systemName: "photo").foregroundColor(.gray.opacity(0.8)))
+                    } else {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.4))
+                            .overlay(ProgressView())
+                    }
                 }
+                .frame(width: 100, height: rank == 1 ? 120 : 90)
+                .cornerRadius(2)
+                .clipped()
+            } else {
+                // Local Asset Image
+                Image(imageUrl)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 100, height: rank == 1 ? 120 : 90) // Preserves your dynamic height logic!
+                    .cornerRadius(2)
+                    .clipped()
             }
-            // Retained your logic to make Rank 1 taller
-            .frame(
-                width: 100,
-                height: rank == 1 ? 120 : 90
-            )
-            .cornerRadius(2)
-            .clipped()
             
             // 3. Content
             VStack(alignment: .leading, spacing: 6) {
@@ -121,7 +125,7 @@ struct RankComicCard: View {
                 genres: ["Cyberpunk", "Action", "Sci-Fi"],
                 title: "Neon Ashes of Sector 7",
                 description: "A rogue AI navigates the dangerous underbelly of a futuristic metropolis, seeking answers to its own existence while hunted by corporate mercenaries.",
-                imageUrl: "https://picsum.photos/200/300", // Will load real image now
+                imageUrl: "08", // Testing with Local Asset string
                 rating: 4.9,
                 readers: 2500000,
                 loves: 89000,
@@ -133,7 +137,7 @@ struct RankComicCard: View {
                 genres: ["Fantasy", "Romance"],
                 title: "The Duke's Secret",
                 description: "When an ordinary librarian accidentally discovers the cursed Duke's hidden magical affinity, she is swept into a world of court politics.",
-                imageUrl: "https://picsum.photos/201/300", // Will load real image now
+                imageUrl: "12", // Testing with Local Asset string
                 rating: 4.7,
                 readers: 950000,
                 loves: 42100,

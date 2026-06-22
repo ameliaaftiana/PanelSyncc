@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct OnboardingPage2: View {
@@ -13,7 +12,10 @@ struct OnboardingPage2: View {
         VStack {
             Spacer()
             
-            // Image Placeholder
+            Image("Onboarding2")
+                .resizable()
+                .scaledToFit()
+                .padding(.horizontal)
             
             Spacer()
             

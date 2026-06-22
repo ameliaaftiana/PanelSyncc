@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct ComicReadingView: View {
@@ -19,15 +18,11 @@ struct ComicReadingView: View {
             // ── 1. Main Comic Content & End Section (Black Background) ─────────
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    // Placeholder for long vertical comic panels
-                    ForEach(0..<3, id: \.self) { index in
-                        ZStack {
-                            Rectangle()
-                                .fill(Color(white: 0.1))
-                                .frame(height: 600)
-                            Text("Comic Panel \(index + 1)")
-                                .foregroundColor(.white.opacity(0.3))
-                        }
+                    ForEach(0..<3, id: \.self) { _ in
+                        Image("comic")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: .infinity)
                     }
                     
                     // ── END OF CHAPTER SECTION ──

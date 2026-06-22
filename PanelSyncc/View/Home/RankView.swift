@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct RankView: View {
@@ -20,10 +19,7 @@ struct RankView: View {
         VStack(spacing: 0) {
             // MARK: - Custom Header
             HStack {
-                // Back Button
-                Button(action: {
-                    dismiss()
-                }) {
+                Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
@@ -32,17 +28,11 @@ struct RankView: View {
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                 }
-
                 Spacer()
-
-                // Title
                 Text("Rank")
                     .font(.rankTitle)
                     .foregroundColor(.panelDark)
-
                 Spacer()
-
-                // Notification Button
                 NavigationLink {
                     Text("Notification View")
                 } label: {
@@ -74,9 +64,7 @@ struct RankView: View {
                                 .frame(height: 2)
                         }
                         .onTapGesture {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                selectedTab = tab
-                            }
+                            withAnimation(.easeInOut(duration: 0.2)) { selectedTab = tab }
                         }
                     }
                 }
@@ -90,20 +78,17 @@ struct RankView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 24) {
                     ForEach(Array(rankedWebtoons.enumerated()), id: \.element.id) { index, webtoon in
-                        // FIX: Directly using the card's native onTap parameter to update state safely
                         RankComicCard(
                             rank: index + 1,
                             genres: [webtoon.genre],
                             title: webtoon.title,
                             description: webtoon.summary,
-                            imageUrl: webtoon.thumbnail,
-                            rating: Double(webtoon.rating) ?? 0.0,
+                            imageUrl: String(format: "%02d", Int.random(in: 1...21)),
+                            rating: webtoon.rating, // FIX: Passed directly without Double() or ??
                             readers: parseCount(webtoon.view),
                             loves: parseCount(webtoon.like),
                             bookmarks: parseCount(webtoon.subscribe),
-                            onTap: {
-                                selectedWebtoon = webtoon // Triggers the navigation stack
-                            }
+                            onTap: { selectedWebtoon = webtoon }
                         )
                     }
                 }
@@ -112,7 +97,6 @@ struct RankView: View {
         }
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
-        // Clean, centralized navigation link processing
         .navigationDestination(item: $selectedWebtoon) { webtoon in
             ComicDetailViewWrapper(webtoon: webtoon, dataLoader: dataLoader)
         }
@@ -121,7 +105,7 @@ struct RankView: View {
         }
     }
 
-    // MARK: - Rank Sorting & Filtering Logic (Top 10)
+    // MARK: - Rank Sorting & Filtering Logic
     private var rankedWebtoons: [Webtoon] {
         let allItems = dataLoader.webtoons
 
@@ -142,7 +126,6 @@ struct RankView: View {
         }
     }
 
-    // MARK: - Helper Methods
     private func parseCount(_ stringValue: String) -> Int {
         let cleanStr = stringValue.lowercased().replacingOccurrences(of: ",", with: "")
         let numbersOnly = cleanStr.filter { "0123456789.".contains($0) }

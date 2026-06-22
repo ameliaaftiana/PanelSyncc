@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct PortraitComicCard: View {
@@ -18,22 +17,32 @@ struct PortraitComicCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             
-            // Comic Cover Image using AsyncImage
-            AsyncImage(url: URL(string: imageUrl)) { image in
-                image
+            // Comic Cover Image (Handles Web URLs & Local Assets)
+            if imageUrl.hasPrefix("http") {
+                AsyncImage(url: URL(string: imageUrl)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.gray)
+                        )
+                }
+                .frame(width: 110, height: 150)
+                .cornerRadius(12)
+                .clipped()
+            } else {
+                // Local Asset Image
+                Image(imageUrl)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Rectangle()
-                    .fill(Color.gray.opacity(0.3))
-                    .overlay(
-                        Image(systemName: "photo")
-                            .foregroundColor(.gray)
-                    )
+                    .frame(width: 110, height: 150)
+                    .cornerRadius(12)
+                    .clipped()
             }
-            .frame(width: 110, height: 150)
-            .cornerRadius(12)
-            .clipped()
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -74,5 +83,5 @@ struct PortraitComicCard: View {
 
 // Preview
 #Preview {
-    PortraitComicCard(title: "21st Century...", rating: "9.40", readers: "1.8M", imageUrl: "https://picsum.photos/110/150")
+    PortraitComicCard(title: "21st Century...", rating: "9.40", readers: "1.8M", imageUrl: "03")
 }

@@ -1,5 +1,5 @@
 //
-//  SearchViewEnter.swift
+//  SearchView.swift
 //  PanelSyncc
 //
 //  Created by Amelia Putri Aftiana on 21/06/26.

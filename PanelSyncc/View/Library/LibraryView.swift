@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct LibraryView: View {
@@ -49,7 +48,14 @@ struct LibraryView: View {
                     LazyVStack(spacing: 14) {
                         ForEach(filteredWebtoons) { webtoon in
                             LibraryComicCard(
-                                genres: [webtoon.genre], title: webtoon.title, description: webtoon.summary, imageUrl: webtoon.thumbnail, rating: Double(webtoon.rating) ?? 0.0, readers: parseCount(webtoon.view), loves: parseCount(webtoon.like), bookmarks: parseCount(webtoon.subscribe),
+                                genres: [webtoon.genre],
+                                title: webtoon.title,
+                                description: webtoon.summary,
+                                imageUrl: String(format: "%02d", Int.random(in: 1...21)),
+                                rating: webtoon.rating, // FIX: Passed directly without Double() or ??
+                                readers: parseCount(webtoon.view),
+                                loves: parseCount(webtoon.like),
+                                bookmarks: parseCount(webtoon.subscribe),
                                 onTap: { selectedWebtoon = webtoon }
                             )
                         }
@@ -71,7 +77,7 @@ struct LibraryView: View {
         case "Current Reading": return Array(dataLoader.webtoons.prefix(10))
         case "Plan to Read": return dataLoader.webtoons.sorted { parseCount($0.like) > parseCount($1.like) }
         case "Completed": return Array(dataLoader.webtoons.dropFirst(5).prefix(5))
-        case "Download": return dataLoader.webtoons.filter { (Double($0.rating) ?? 0.0) > 9.5 }
+        case "Download": return dataLoader.webtoons.filter { $0.rating > 9.5 }
         case "Others": return Array(dataLoader.webtoons.suffix(3))
         default: return dataLoader.webtoons
         }

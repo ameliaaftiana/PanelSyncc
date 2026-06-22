@@ -12,6 +12,9 @@ struct UploadChapterView: View {
 
     // Passed in from the previous screen
     var seriesTitle: String
+    
+    // FIX: Binding to allow popping back to CreatorStudio
+    @Binding var rootIsActive: Bool
 
     @State private var chapterNumber: String = ""
     @State private var chapterTitle: String = ""
@@ -156,6 +159,8 @@ struct UploadChapterView: View {
                     PrimaryButton(title: "Publish Chapter") {
                         // TODO: Submit data to backend
                         print("Publishing chapter...")
+                        // FIX: Setting to false dismisses this view AND UploadComicView at once
+                        rootIsActive = false
                     }
                 }
                 .padding(.horizontal)
@@ -163,11 +168,12 @@ struct UploadChapterView: View {
         }
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
+        .toolbar(.hidden, for: .tabBar) // FIX: Hides Tab Bar
     }
 }
 
 #Preview {
     NavigationStack {
-        UploadChapterView(seriesTitle: "Comic Title")
+        UploadChapterView(seriesTitle: "Comic Title", rootIsActive: .constant(true))
     }
 }

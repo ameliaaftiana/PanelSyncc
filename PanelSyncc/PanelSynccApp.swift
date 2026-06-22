@@ -9,9 +9,19 @@ import SwiftUI
 
 @main
 struct PanelSynccApp: App {
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // Apply the logic inside the content view builder
+            Group {
+                if hasSeenOnboarding {
+                    ContentView()
+                } else {
+                    OnboardingContainerView()
+                }
+            }
+            .animation(.easeInOut, value: hasSeenOnboarding) // Applied here to the views
         }
     }
 }

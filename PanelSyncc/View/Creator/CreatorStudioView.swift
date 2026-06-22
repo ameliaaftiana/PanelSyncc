@@ -70,9 +70,11 @@ struct CreatorStudioView: View {
         }
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
+        .toolbar(.hidden, for: .tabBar) // FIX: Hides Tab Bar
         // 3. Add the navigation destination here
         .navigationDestination(isPresented: $showUploadComic) {
-            UploadComicView()
+            // Pass the binding down so child views can pop back here
+            UploadComicView(rootIsActive: $showUploadComic)
         }
     }
 }

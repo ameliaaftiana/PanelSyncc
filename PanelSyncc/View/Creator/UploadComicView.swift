@@ -10,6 +10,9 @@ import SwiftUI
 struct UploadComicView: View {
     @Environment(\.dismiss) private var dismiss
 
+    // FIX: Binding to allow popping back to CreatorStudio
+    @Binding var rootIsActive: Bool
+
     @State private var comicTitle: String = ""
     @State private var genres: String = ""
     @State private var synopsis: String = ""
@@ -125,14 +128,16 @@ struct UploadComicView: View {
         }
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .navigationBarHidden(true)
+        .toolbar(.hidden, for: .tabBar) // FIX: Hides Tab Bar
         .navigationDestination(isPresented: $navigateToChapter) {
-            UploadChapterView(seriesTitle: comicTitle.isEmpty ? "Comic Title" : comicTitle)
+            // Pass the binding down to the next level
+            UploadChapterView(seriesTitle: comicTitle.isEmpty ? "Comic Title" : comicTitle, rootIsActive: $rootIsActive)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        UploadComicView()
+        UploadComicView(rootIsActive: .constant(true))
     }
 }

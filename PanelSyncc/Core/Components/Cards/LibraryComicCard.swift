@@ -20,24 +20,36 @@ struct LibraryComicCard: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            let safeUrlString = imageUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? imageUrl
             
-            AsyncImage(url: URL(string: safeUrlString)) { image in
-                image
+            // 1. Comic Cover Image (Handles Web URLs & Local Assets)
+            if imageUrl.hasPrefix("http") {
+                let safeUrlString = imageUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? imageUrl
+                AsyncImage(url: URL(string: safeUrlString)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.4))
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.gray.opacity(0.8))
+                        )
+                }
+                .frame(width: 100, height: 120)
+                .cornerRadius(2)
+                .clipped()
+            } else {
+                // Local Asset Image
+                Image(imageUrl)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Rectangle()
-                    .fill(Color.gray.opacity(0.4))
-                    .overlay(
-                        Image(systemName: "photo")
-                            .foregroundColor(.gray.opacity(0.8))
-                    )
+                    .frame(width: 100, height: 120)
+                    .cornerRadius(2)
+                    .clipped()
             }
-            .frame(width: 100, height: 120)
-            .cornerRadius(2)
-            .clipped()
-            // 3. Content
+            
+            // 2. Content
             VStack(alignment: .leading, spacing: 6) {
                 
                 // Genre
@@ -104,8 +116,7 @@ struct LibraryComicCard: View {
                 genres: ["Cyberpunk", "Action", "Sci-Fi"],
                 title: "Neon Ashes of Sector 7",
                 description: "A rogue AI navigates the dangerous underbelly of a futuristic metropolis, seeking answers to its own existence while hunted by corporate mercenaries.",
-                // Test with a real image URL in the preview!
-                imageUrl: "https://picsum.photos/100/120",
+                imageUrl: "01", // Testing with Local Asset string
                 rating: 4.9,
                 readers: 2500000,
                 loves: 89000,
@@ -116,7 +127,7 @@ struct LibraryComicCard: View {
                 genres: ["Fantasy", "Romance"],
                 title: "The Duke's Secret",
                 description: "When an ordinary librarian accidentally discovers the cursed Duke's hidden magical affinity, she is swept into a world of court politics.",
-                imageUrl: "https://picsum.photos/100/120",
+                imageUrl: "05", // Testing with Local Asset string
                 rating: 4.7,
                 readers: 950000,
                 loves: 42100,

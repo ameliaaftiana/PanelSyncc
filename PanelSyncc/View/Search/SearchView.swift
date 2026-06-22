@@ -105,7 +105,6 @@ struct SearchView: View {
                                                 recentSearches.remove(at: index)
                                             }
                                         }
-                                        // FIX: Replaced tap gesture with proper tap area
                                         .contentShape(Rectangle())
                                         .onTapGesture {
                                             searchText = search
@@ -127,14 +126,14 @@ struct SearchView: View {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 16) {
                                     ForEach(trendingWebtoons) { webtoon in
-                                        // FIX: Replaced buggy TapGesture with a reliable Button
                                         Button(action: {
                                             selectedWebtoon = webtoon
                                         }) {
                                             TrendingSearchCard(
                                                 title: webtoon.title,
                                                 author: webtoon.author,
-                                                imageUrl: webtoon.thumbnail
+                                                // NEW: Force random image 01-21
+                                                imageUrl: String(format: "%02d", Int.random(in: 1...21))
                                             )
                                         }
                                         .buttonStyle(PlainButtonStyle())
@@ -153,7 +152,6 @@ struct SearchView: View {
 
                             LazyVGrid(columns: columns, spacing: 16) {
                                 ForEach(dynamicCategories, id: \.title) { category in
-                                    // FIX: Replaced buggy TapGesture with a reliable Button
                                     Button(action: {
                                         selectedGenre = category.title
                                         navigateToGenre = true
@@ -161,7 +159,8 @@ struct SearchView: View {
                                         CategoryCard(
                                             title: category.title,
                                             seriesCount: category.count,
-                                            imageUrl: category.imageUrl
+                                            // NEW: Force random image 01-21
+                                            imageUrl: String(format: "%02d", Int.random(in: 1...21))
                                         )
                                     }
                                     .buttonStyle(PlainButtonStyle())
@@ -226,7 +225,8 @@ struct SearchView: View {
     }
 }
 
-// Preview
 #Preview {
-    SearchView()
+    NavigationStack {
+        SearchViewEnter(searchText: "Fantasy", dataLoader: WebtoonDataLoader())
+    }
 }

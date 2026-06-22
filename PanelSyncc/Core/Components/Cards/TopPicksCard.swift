@@ -21,42 +21,46 @@ struct TopPicksCard: View {
     var body: some View {
         ZStack(alignment: .leading) {
             
-            // 1. Background Image using AsyncImage
-            AsyncImage(url: URL(string: imageUrl)) { phase in
-                switch phase {
-                case .empty:
-                    // Shows while loading
-                    ZStack {
-                        Color(red: 0.1, green: 0.2, blue: 0.5)
-                        ProgressView()
-                            .tint(.white)
-                    }
-                case .success(let image):
-                    // Shows when successfully loaded
-                    image
-                        .resizable()
-                        .scaledToFill()
-                case .failure:
-                    // Shows if the URL is broken
-                    ZStack {
-                        Color(red: 0.1, green: 0.2, blue: 0.5)
-                        HStack {
-                            Spacer()
-                            Image(systemName: "photo.badge.exclamationmark")
-                                .font(.system(size: 40))
-                                .foregroundColor(.white.opacity(0.3))
-                                .padding(.trailing, 40)
+            // 1. Background Image (Handles Web URLs & Local Assets)
+            if imageUrl.hasPrefix("http") {
+                AsyncImage(url: URL(string: imageUrl)) { phase in
+                    switch phase {
+                    case .empty:
+                        ZStack {
+                            Color(red: 0.1, green: 0.2, blue: 0.5)
+                            ProgressView().tint(.white)
                         }
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .failure:
+                        ZStack {
+                            Color(red: 0.1, green: 0.2, blue: 0.5)
+                            HStack {
+                                Spacer()
+                                Image(systemName: "photo.badge.exclamationmark")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.white.opacity(0.3))
+                                    .padding(.trailing, 40)
+                            }
+                        }
+                    @unknown default:
+                        Color(red: 0.1, green: 0.2, blue: 0.5)
                     }
-                @unknown default:
-                    Color(red: 0.1, green: 0.2, blue: 0.5)
                 }
+                .frame(width: 346, height: 150)
+                .clipped()
+            } else {
+                // Local Asset Image
+                Image(imageUrl)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 346, height: 150)
+                    .clipped()
             }
-            // Ensures the image background stays within the exact bounds of the card
-            .frame(width: 346, height: 150)
-            .clipped()
             
-            // 2. Gradient Overlay (Keeps your text legible against any image)
+            // 2. Gradient Overlay (Keeps your text legible)
             LinearGradient(
                 gradient: Gradient(colors: [Color.black.opacity(0.9), Color.black.opacity(0.0)]),
                 startPoint: .leading,
@@ -66,12 +70,12 @@ struct TopPicksCard: View {
             // 3. Text Content
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
-                    .font(.cardTopPicksTitle) // Note: Ensure this custom font extension exists in your project
+                    .font(.cardTopPicksTitle)
                     .foregroundColor(.white)
                     .lineLimit(1)
                 
                 Text(description)
-                    .font(.cardTopPicksDescription) // Note: Ensure this custom font extension exists in your project
+                    .font(.cardTopPicksDescription)
                     .foregroundColor(.white.opacity(0.8))
                     .lineLimit(3)
                     .padding(.bottom, 4)
@@ -90,7 +94,7 @@ struct TopPicksCard: View {
                     HStack(spacing: 2) {
                         Image(systemName: "eye.fill")
                             .foregroundColor(.gray)
-                        Text(readers.abbreviated()) // Note: Ensure this extension exists
+                        Text(readers.abbreviated())
                             .foregroundColor(.white)
                     }
                     
@@ -110,7 +114,7 @@ struct TopPicksCard: View {
                             .foregroundColor(.white)
                     }
                 }
-                .font(.comicCardPortraitBody) // Note: Ensure this custom font extension exists
+                .font(.comicCardPortraitBody)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
                 
@@ -137,7 +141,7 @@ struct TopPicksCard: View {
         title: "I'm the Queen in This Life",
         description: "The Etruscan Kingdom is stained with blood when the king's illegitimate son Cesare conspires with his fiancée...",
         genre: "Fantasy",
-        imageUrl: "https://images.unsplash.com/photo-1618331835717-801e976710b2?q=80&w=2000&auto=format&fit=crop",
+        imageUrl: "01", // Testing with a local asset name
         rating: 4.8,
         readers: 1200000,
         loves: 45500,

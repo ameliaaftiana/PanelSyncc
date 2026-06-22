@@ -16,22 +16,32 @@ struct PortraitComicCardSmaller: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             
-            // Comic Cover Image using AsyncImage
-            AsyncImage(url: URL(string: imageUrl)) { image in
-                image
+            // Comic Cover Image (Handles Web URLs & Local Assets)
+            if imageUrl.hasPrefix("http") {
+                AsyncImage(url: URL(string: imageUrl)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.gray)
+                        )
+                }
+                .frame(width: 110, height: 110)
+                .cornerRadius(12)
+                .clipped()
+            } else {
+                // Local Asset Image
+                Image(imageUrl)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Rectangle()
-                    .fill(Color.gray.opacity(0.3))
-                    .overlay(
-                        Image(systemName: "photo")
-                            .foregroundColor(.gray)
-                    )
+                    .frame(width: 110, height: 110)
+                    .cornerRadius(12)
+                    .clipped()
             }
-            .frame(width: 110, height: 110)
-            .cornerRadius(12)
-            .clipped()
             
             // Text Content
             VStack(alignment: .leading, spacing: 2) {
@@ -56,7 +66,7 @@ struct PortraitComicCardSmaller: View {
 // Preview
 #Preview {
     HStack(spacing: 16) {
-        PortraitComicCardSmaller(title: "10th Dimension...", lastChap: "Chap 119", imageUrl: "https://picsum.photos/110/110")
+        PortraitComicCardSmaller(title: "10th Dimension...", lastChap: "Chap 119", imageUrl: "02")
         PortraitComicCardSmaller(title: "11 of Me", lastChap: "Chap 7", imageUrl: "https://picsum.photos/110/110")
     }
     .padding()

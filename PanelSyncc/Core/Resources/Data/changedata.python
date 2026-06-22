@@ -1,0 +1,17 @@
+import json
+import random
+
+# 1. Read your existing database
+with open('webtoon_combined.json', 'r') as file:
+    data = json.load(file)
+
+# 2. Assign a random asset name to every item
+for item in data:
+    # random.randint(1, 10) picks a number, :02d formats it to have a leading zero
+    item['thumbnail'] = f"{random.randint(1, 10):02d}"
+
+# 3. Save it to a new file so you don't lose the original
+with open('webtoon_combined_local.json', 'w') as file:
+    json.dump(data, file, indent=4)
+
+print("Database updated successfully!")

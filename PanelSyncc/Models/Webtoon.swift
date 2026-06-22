@@ -15,7 +15,7 @@ struct Webtoon: Identifiable, Codable, Hashable {
     let title: String
     let author: String
     let genre: String
-    let thumbnail: String
+    var thumbnail: String
     let summary: String
     let episodes: Int
     let view: String
@@ -350,19 +350,29 @@ class WebtoonDataLoader: ObservableObject {
     
     /// Load all webtoons from the bundled JSON file
     func loadFromBundle(filename: String = "webtoon_combined") {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
-              let data = try? Data(contentsOf: url) else {
-            print("Could not find \(filename).json in bundle")
-            webtoons = Webtoon.sampleData
-            return
+            guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
+                  let data = try? Data(contentsOf: url) else {
+                print("Could not find \(filename).json in bundle")
+                webtoons = Webtoon.sampleData
+                return
+            }
+            
+            do {
+                var decodedWebtoons = try JSONDecoder().decode([Webtoon].self, from: data)
+                
+                // Overwrite the JSON thumbnails with your random local assets (01 to 10)
+                for i in 0..<decodedWebtoons.count {
+                    let randomAssetNumber = Int.random(in: 1...21)
+                    // %02d ensures numbers 1-9 get a leading zero (e.g., "01", "07")
+                    decodedWebtoons[i].thumbnail = String(format: "%02d", randomAssetNumber)
+                }
+                
+                webtoons = decodedWebtoons
+            } catch {
+                print("Decode error: \(error)")
+                webtoons = Webtoon.sampleData
+            }
         }
-        do {
-            webtoons = try JSONDecoder().decode([Webtoon].self, from: data)
-        } catch {
-            print("Decode error: \(error)")
-            webtoons = Webtoon.sampleData
-        }
-    }
     
     /// Filter helpers
     func filtered(by genre: String? = nil, status: WebtoonStatus? = nil) -> [Webtoon] {
@@ -448,6 +458,7 @@ class WebtoonDataLoader: ObservableObject {
 // Drop-in SwiftUI component for loading webtoon cover images
 import SwiftUI
 
+
 struct WebtoonThumbnailView: View {
     let url: String
     var width: CGFloat = 120
@@ -455,36 +466,46 @@ struct WebtoonThumbnailView: View {
     var cornerRadius: CGFloat = 10
     
     var body: some View {
-        AsyncImage(url: URL(string: url)) { phase in
-            switch phase {
-            case .empty:
-                ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(Color(.systemGray5))
-                    ProgressView()
+        if url.hasPrefix("http") {
+            // Failsafe: If it's still a web link, load it from the internet
+            AsyncImage(url: URL(string: url)) { phase in
+                switch phase {
+                case .empty:
+                    ZStack {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(Color(.systemGray5))
+                        ProgressView()
+                    }
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: width, height: height)
+                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                case .failure:
+                    ZStack {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(Color(.systemGray4))
+                        Image(systemName: "photo")
+                            .foregroundColor(.gray)
+                    }
+                @unknown default:
+                    EmptyView()
                 }
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: width, height: height)
-                    .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            case .failure:
-                ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(Color(.systemGray4))
-                    Image(systemName: "photo")
-                        .foregroundColor(.gray)
-                }
-            @unknown default:
-                EmptyView()
             }
+            .frame(width: width, height: height)
+        } else {
+            // NEW: If it's "01", "02", etc., load it directly from your asset catalog
+            Image(url)
+                .resizable()
+                .scaledToFill()
+                .frame(width: width, height: height)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         }
-        .frame(width: width, height: height)
     }
 }
-
 // MARK: - Ranking Helpers
 extension WebtoonDataLoader {
     

@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 struct OnboardingPage4: View {
@@ -13,18 +12,21 @@ struct OnboardingPage4: View {
         VStack {
             Spacer()
             
-            // Image Placeholder
+            Image("Onboarding4")
+                .resizable()
+                .scaledToFit()
+                .padding(.horizontal)
             
             Spacer()
             
             VStack(spacing: 12) {
                 Text("Welcome to\nPanelSync")
-                    .font(.onboardingTitle) 
+                    .font(.onboardingTitle)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.black)
                 
                 Text("The ultimate social hub for comic enthusiasts. Join the community to read, curate, and connect.")
-                    .font(.onboardingDescription) 
+                    .font(.onboardingDescription)
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)

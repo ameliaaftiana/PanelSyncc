@@ -5,7 +5,6 @@
 //  Created by Amelia Putri Aftiana on 18/06/26.
 //
 
-
 import SwiftUI
 
 // MARK: - ComicDetailView
@@ -29,29 +28,41 @@ struct ComicDetailView: View {
             VStack(alignment: .leading, spacing: 0) {
                 // ── 1. Header Image ────────────────────────────────────────
                 ZStack(alignment: .bottom) {
-                    AsyncImage(url: webtoon.thumbnailURL) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        case .failure(_):
-                            Color.gray.opacity(0.25)
-                                .overlay(
-                                    Image(systemName: "photo")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(.gray)
-                                )
-                        case .empty:
-                            Color.gray.opacity(0.25)
-                                .overlay(ProgressView())
-                        @unknown default:
-                            Color.gray.opacity(0.25)
+                    
+                    // Handles both Web URLs and Local Assets
+                    if webtoon.thumbnail.hasPrefix("http") {
+                        AsyncImage(url: webtoon.thumbnailURL) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            case .failure(_):
+                                Color.gray.opacity(0.25)
+                                    .overlay(
+                                        Image(systemName: "photo")
+                                            .font(.system(size: 40))
+                                            .foregroundColor(.gray)
+                                    )
+                            case .empty:
+                                Color.gray.opacity(0.25)
+                                    .overlay(ProgressView().tint(.white))
+                            @unknown default:
+                                Color.gray.opacity(0.25)
+                            }
                         }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 280)
+                        .clipped()
+                    } else {
+                        // Local Asset Image
+                        Image(webtoon.thumbnail)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 280)
+                            .clipped()
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 280)
-                    .clipped()
                     
                     LinearGradient(
                         gradient: Gradient(colors: [
@@ -178,14 +189,17 @@ struct ComicDetailView: View {
                         
                         VStack(spacing: 8) {
                             ForEach(chapters.prefix(4)) { chapter in
-                                ChapterRowCard(
-                                    chapterNumber: chapter.chapterNumber,
-                                    chapterTitle: chapter.title,
-                                    views: chapter.views,
-                                    loves: chapter.loves,
-                                    comments: chapter.comments,
-                                    imageUrl: chapter.imageUrl
-                                )
+                                NavigationLink(destination: ComicReadingView(chapterNumber: chapter.chapterNumber)) {
+                                    ChapterRowCard(
+                                        chapterNumber: chapter.chapterNumber,
+                                        chapterTitle: chapter.title,
+                                        views: chapter.views,
+                                        loves: chapter.loves,
+                                        comments: chapter.comments,
+                                        imageUrl: chapter.imageUrl.isEmpty ? String(format: "%02d", Int.random(in: 1...10)) : chapter.imageUrl
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
                         .padding(.horizontal)
@@ -227,7 +241,7 @@ struct ComicDetailView: View {
                                     CollectionsCard(
                                         title: item.title,
                                         author: item.author,
-                                        imageUrl: item.imageUrl
+                                        imageUrl: item.imageUrl.isEmpty ? String(format: "%02d", Int.random(in: 1...10)) : item.imageUrl
                                     )
                                 }
                             }
@@ -245,12 +259,17 @@ struct ComicDetailView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 16) {
                                 ForEach(dataLoader.webtoons.dropFirst().prefix(10)) { comic in
-                                    PortraitComicCard(
-                                        title: comic.title,
-                                        rating: String(format: "%.1f", comic.rating),
-                                        readers: comic.view,
-                                        imageUrl: comic.thumbnail
-                                    )
+                                    // NEW: Wrapped in NavigationLink to navigate to the detailed comic view
+                                    NavigationLink(destination: ComicDetailViewWrapper(webtoon: comic, dataLoader: dataLoader)) {
+                                        PortraitComicCard(
+                                            title: comic.title,
+                                            rating: String(format: "%.1f", comic.rating),
+                                            readers: comic.view,
+                                            // NEW: Forces a random image from your local assets, ignoring the JSON web URL
+                                            imageUrl: String(format: "%02d", Int.random(in: 1...10))
+                                        )
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                             .padding(.horizontal)
@@ -503,7 +522,7 @@ private struct StarRatingView: View {
                 title: "The Comic Title",
                 author: "The Creator",
                 genre: "Fantasy",
-                thumbnail: "https://picsum.photos/seed/webtoon1193/300/420",
+                thumbnail: "01", // Testing with Local Asset string
                 summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet vestibulum lorem. Vivamus posuere convallis est, a porttitor odio tempor non. Sed lobortis aliquet convallis. Maecenas vel magna vitae lorem ipsum consectetur.",
                 episodes: 64,
                 view: "31K",

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 // MARK: - Mini Sub-Component for Trending Searches
 struct TrendingSearchCard: View {
     let title: String
@@ -18,22 +17,32 @@ struct TrendingSearchCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             
-            // Comic Cover Image using AsyncImage
-            AsyncImage(url: URL(string: imageUrl)) { image in
-                image
+            // Comic Cover Image (Handles Web URLs & Local Assets)
+            if imageUrl.hasPrefix("http") {
+                AsyncImage(url: URL(string: imageUrl)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.gray)
+                        )
+                }
+                .frame(width: 110, height: 110)
+                .cornerRadius(12)
+                .clipped()
+            } else {
+                // Local Asset Image
+                Image(imageUrl)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Rectangle()
-                    .fill(Color.gray.opacity(0.3))
-                    .overlay(
-                        Image(systemName: "photo")
-                            .foregroundColor(.gray)
-                    )
+                    .frame(width: 110, height: 110)
+                    .cornerRadius(12)
+                    .clipped()
             }
-            .frame(width: 110, height: 110)
-            .cornerRadius(12)
-            .clipped()
             
             // Text Content
             VStack(alignment: .leading, spacing: 2) {
@@ -59,14 +68,14 @@ struct TrendingSearchCard: View {
 #Preview {
     HStack(spacing: 16) {
         TrendingSearchCard(
-            title: "Neon Ashes", 
-            author: "Jane Doe", 
-            imageUrl: "https://picsum.photos/110/110"
+            title: "Neon Ashes",
+            author: "Jane Doe",
+            imageUrl: "01" // Testing with Local Asset string
         )
         TrendingSearchCard(
-            title: "The Duke's Secret", 
-            author: "John Smith", 
-            imageUrl: "https://picsum.photos/110/111"
+            title: "The Duke's Secret",
+            author: "John Smith",
+            imageUrl: "05" // Testing with Local Asset string
         )
     }
     .padding()
